@@ -61,8 +61,8 @@ namespace FFX2MemoryReader
         //         SIZE_T nSize,                   // count of bytes to write 
         //         SIZE_T * lpNumberOfBytesWritten // count of bytes written 
         //         ); 
-        [DllImport("kernel32.dll")]
-        public static extern Int32 WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesWritten);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, Int32 nSize, out IntPtr lpNumberOfBytesWritten);
 
 
     }
@@ -83,6 +83,7 @@ namespace FFX2MemoryReader
                 ProcessMemoryReaderApi.ProcessAccessType access =
                     ProcessMemoryReaderApi.ProcessAccessType.PROCESS_QUERY_INFORMATION |
                     ProcessMemoryReaderApi.ProcessAccessType.PROCESS_VM_READ |
+                    ProcessMemoryReaderApi.ProcessAccessType.PROCESS_VM_WRITE |
                     ProcessMemoryReaderApi.ProcessAccessType.PROCESS_VM_OPERATION;
                 handle = ProcessMemoryReaderApi.OpenProcess((uint)access, 1, (uint)ReadProcess.Id);
             }
@@ -112,12 +113,20 @@ namespace FFX2MemoryReader
             return buffer;
         }
 
-        public void WriteMemory(IntPtr memoryAdress, byte[] buffer, out int bytesWritten)
+        public int WriteMemory(IntPtr memoryAdress, byte[] buffer, out int bytesWritten)
         {
-            IntPtr p_BytesWritten = IntPtr.Zero;
+            try
+            {
+                IntPtr p_BytesWritten;
 
-            ProcessMemoryReaderApi.WriteProcessMemory(handle, memoryAdress, buffer, (uint)buffer.Length, out p_BytesWritten);
-            bytesWritten = p_BytesWritten.ToInt32();
+                ProcessMemoryReaderApi.WriteProcessMemory(handle, memoryAdress, buffer, 0x1E, out p_BytesWritten);
+                bytesWritten = p_BytesWritten.ToInt32();
+            }
+            catch
+            {
+                bytesWritten = 0;
+            }
+            return Marshal.GetLastWin32Error();
         }
     }
 }
