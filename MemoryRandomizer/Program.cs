@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Security.Cryptography;
-using Newtonsoft.Json;
 using System.Threading;
 
 namespace MemoryRandomizer
@@ -24,16 +22,17 @@ namespace MemoryRandomizer
         private static int bytesOut;
         private static int bytesIn;
 
-        private static Process gameProcess;
+        private static Process mGameProcess;
+
+        private static Serializer mSerializer = new Serializer();
 
         static void Main(string[] args)
         {
             // read save file
             try
             {
-                string savedMapping = File.ReadAllText("Mapping.txt");
                 DresssphereMapping.MappingList.Clear();
-                DresssphereMapping.MappingList = JsonConvert.DeserializeObject<List<Tuple<Dresssphere, Dresssphere>>>(savedMapping);
+                DresssphereMapping.MappingList = mSerializer.LoadMapping<List<Tuple<Dresssphere, Dresssphere>>>("Mapping.txt");
                 initialReadDone = true;
             }
             catch (Exception ex)
@@ -48,7 +47,7 @@ namespace MemoryRandomizer
             // Initial read
             while (!initialReadDone)
             {
-                byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
+                byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
                 if (bytesOut <= 0)
                 {
                     FindAndOpenGameProcess();
@@ -56,7 +55,7 @@ namespace MemoryRandomizer
                 else
                 {
                     initialReadDone = true;
-                    InitiateDressspheres(initialMemoryBytes);
+                    DresssphereMapping.InitiateDressspheres(initialMemoryBytes);
                     // Initiate randomization
                     Randomizer.Shuffle(DresssphereMapping.RandomizableDresspheres);
                     DresssphereMapping.CreateMapping();
@@ -67,7 +66,7 @@ namespace MemoryRandomizer
             while (true)
             {
                 bytesOut = 0;
-                byte[] memoryBytes = mReader.ReadMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
+                byte[] memoryBytes = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
                 if (bytesOut <= 0)
                 {
                     FindAndOpenGameProcess();
@@ -79,19 +78,20 @@ namespace MemoryRandomizer
 
                     // Write mapping data to memory
                     CreateByteArray(newByteArray);
-                    int error = mReader.WriteMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArray, out bytesIn);
+                    int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArray, out bytesIn);
                     if (error != 0)
                     {
                         Console.WriteLine($"Write Memory returned with error code {error}");
                         Console.WriteLine("Closing application...");
                         break;
                     }
-                    SaveMapping();
+                    mSerializer.SaveDresssphereMapping("Mapping.txt");
                     Thread.Sleep(500);
                 }
             }
         }
 
+        #region process
         private static Process FindGameProcess()
         {
             Process[] processes;
@@ -110,6 +110,16 @@ namespace MemoryRandomizer
             } while (processes.Length < 1);
             return null;
         }
+        private static void FindAndOpenGameProcess()
+        {
+            mGameProcess = FindGameProcess();
+            if (mGameProcess != null)
+            {
+                mReader = new ProcessMemoryReader(mGameProcess);
+                mReader.OpenProcess();
+            }
+        }
+        #endregion process
 
         private static void CreateByteArray(byte[] newByteArray)
         {
@@ -117,16 +127,6 @@ namespace MemoryRandomizer
             {
                 newByteArray[ds.Item2.Index] = Convert.ToByte(ds.Item2.Count);
                 // Console.WriteLine($"{ds.Item1.Name}, {ds.Item1.Count} -> {ds.Item2.Name}, {ds.Item2.Count}");
-            }
-        }
-
-        private static void InitiateDressspheres(byte[] initialByteArray)
-        {
-            int i = 0;
-            foreach (byte b in initialByteArray)
-            {
-                DresssphereMapping.Dresspheres[i].Count = Convert.ToUInt32(initialByteArray[i]);
-                i++;
             }
         }
 
@@ -140,22 +140,6 @@ namespace MemoryRandomizer
                     DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count = newCount;
                     DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count = newCount;
                 }
-            }
-        }
-
-        private static void SaveMapping()
-        {
-            var jsonString = JsonConvert.SerializeObject(DresssphereMapping.MappingList);
-            File.WriteAllText("Mapping.txt", jsonString);
-        }
-
-        private static void FindAndOpenGameProcess()
-        {
-            gameProcess = FindGameProcess();
-            if (gameProcess != null)
-            {
-                mReader = new ProcessMemoryReader(gameProcess);
-                mReader.OpenProcess();
             }
         }
     }

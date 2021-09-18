@@ -82,5 +82,14 @@ namespace MemoryRandomizer
                 }
             }
         }
+        public static void InitiateDressspheres(byte[] initialByteArray)
+        {
+            int i = 0;
+            foreach (byte b in initialByteArray)
+            {
+                Dresspheres[i].Count = Convert.ToUInt32(initialByteArray[i]);
+                i++;
+            }
+        }
     }
 }
