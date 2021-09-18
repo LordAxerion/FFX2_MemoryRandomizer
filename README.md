@@ -15,29 +15,29 @@ If you randomize the GarmentGrids you will have to remove the FirstStep GG from 
 If you randomize both, you might want to remove the DS from FirstStep once you got it, since the old one (Thief, Warrior, Songstress, Gunner) will still be on it, even if you don't have them.
 
 ## FAQ
-Will there be a GUI at some point?
+**Will there be a GUI at some point?
 - No, unless you write one yourself ;)
 
-What does the mod do exactly? Will it mess with my game?
+**What does the mod do exactly? Will it mess with my game?
 - The mod is working in the games process memory. It doesn't touch the binary files, or any ressources, which means that if you start a new game without the mod attached, everything will work as intended. 
 - If you save a game in which you used the mod you will have the same randomized dressspheres even if the mod isn't running anymore.
 
-The game said I picked up Dressphere XX, but I got a different one.
+**The game said I picked up Dressphere XX, but I got a different one.
 - Yes the game will give you the ones which you should get, for example Festivalist from Brother after talking to him. The Mod will then switch it with something else. Currently it is not possible to see what you got in the pickup text. Once you open your menu you will see that you got a random one.
 
-One of my dresspheres is what it should be instead of a random one.
+**One of my dresspheres is what it should be instead of a random one.
 - Note that sometimes the random algorithm shuffles the same dresssphere on the index it was at before. It usually happens only to one.
 
-What are you currently working on?
+**What are you currently working on?
 - Randomizing Garment Grids vs Dresspheres -> if you pick up a dressphere you might get a Garment Grid instead and vice versa~
 
-Something really bugs me! >:(
+**Something really bugs me! >:(
 - That is fine, open an issue or contact me and I will try to solve your problem. You can also contribute code yourself :)
 
-Can I contribute?
+**Can I contribute?
 - Of course, I made this because I wanted a randomizer for this game, the better it gets, the happier I am.
 
-Can I copy your code, or sell it?
+**Can I copy your code, or sell it?
 - Look in the license file. You can do whatever you want, but being named would be nice of you.
 
 If you have any further questions feel free to contact me on Discord: Earinor#4167
