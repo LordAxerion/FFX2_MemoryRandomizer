@@ -21,6 +21,9 @@ What does the mod do exactly? Will it mess with my game?
 - The mod is working in the games process memory. It doesn't touch the binary files, or any ressources, which means that if you start a new game without the mod attached, everything will work as intended. 
 - If you save a game in which you used the mod you will have the same randomized dressspheres even if the mod isn't running anymore.
 
+The game said I picked up Dressphere XX, but I got a different one.
+- Yes the game will give you the ones which you should get, for example Festivalist from Brother after talking to him. The Mod will then switch it with something else. Currently it is not possible to see what you got in the pickup text.
+
 What are you currently working on?
 - Randomizing Garment Grids
 
