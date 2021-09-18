@@ -74,7 +74,8 @@ namespace MemoryRandomizer
                     }
                     else
                     {
-                        // TBD: check byteArray for changes -> apply changes to mapping 
+                        // check byteArray for changes -> apply changes to mapping 
+                        CheckReadBytes(memoryBytes);
 
                         // Write mapping data to memory
                         CreateByteArray(newByteArray);
@@ -115,7 +116,7 @@ namespace MemoryRandomizer
             foreach (Tuple<Dresssphere, Dresssphere> ds in DresssphereMapping.MappingList)
             {
                 newByteArray[ds.Item2.Index] = Convert.ToByte(ds.Item2.Count);
-                // Console.WriteLine($"{ds.Item1.Name}, {ds.Item1.Count} -> {ds.Item2.Name}, {ds.Item2.Count}");
+                Console.WriteLine($"{ds.Item1.Name}, {ds.Item1.Count} -> {ds.Item2.Name}, {ds.Item2.Count}");
             }
         }
 
@@ -126,6 +127,19 @@ namespace MemoryRandomizer
             {
                 DresssphereMapping.Dresspheres[i].Count = Convert.ToUInt32(initialByteArray[i]);
                 i++;
+            }
+        }
+
+        private static void CheckReadBytes(byte[] readByteArray)
+        {
+            foreach(var tuple in DresssphereMapping.MappingList)
+            {
+                uint newCount = readByteArray[tuple.Item2.Index];
+                if (tuple.Item2.Count != newCount)
+                {
+                    DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count = newCount;
+                    DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count = newCount;
+                }
             }
         }
     }

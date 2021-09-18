@@ -11,8 +11,8 @@ namespace MemoryRandomizer
         public static List<Dresssphere> Dresspheres = new List<Dresssphere>()
         {
             new Dresssphere(0, 0x4fbc, false, "Nothing", false),
-            new Dresssphere(1, 0x4fbd, false, "Gunner", true,1),
-            new Dresssphere(2, 0x4fbe, false, "Gun Mage", true,1),
+            new Dresssphere(1, 0x4fbd, false, "Gunner", true),
+            new Dresssphere(2, 0x4fbe, false, "Gun Mage", true),
             new Dresssphere(3, 0x4fbf, false, "Alchemist", true),
             new Dresssphere(4, 0x4fc0, false, "Warrior", true),
             new Dresssphere(5, 0x4fc1, false, "Samurai", true),
