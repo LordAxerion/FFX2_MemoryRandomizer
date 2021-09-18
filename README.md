@@ -11,6 +11,9 @@ A FFX-2 randomizer that randomizes gotten dressspheres in memory.
 Will there be a GUI at some point?
 - No, unless you write one yourself ;)
 
+What are you currently working on?
+- A way to save your mapping data, so you can continue playing after saving and closing the game without randomizing everything anew.
+
 Can I contribute?
 - Of course, I made this because I wanted a randomizer for this game, the better it gets, the happier I am.
 
