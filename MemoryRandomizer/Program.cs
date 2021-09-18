@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
 using System.Threading;
 
 namespace MemoryRandomizer
@@ -26,7 +27,20 @@ namespace MemoryRandomizer
 
         static void Main(string[] args)
         {
-            
+            // read save file
+            try
+            {
+                string savedMapping = File.ReadAllText("Mapping.txt");
+                DresssphereMapping.MappingList.Clear();
+                DresssphereMapping.MappingList = JsonConvert.DeserializeObject<List<Tuple<Dresssphere, Dresssphere>>>(savedMapping);
+                initialReadDone = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not read save file: {ex}");
+                Console.WriteLine("Initiating new mapping...");
+            }
+
             // Attach to process
             Process gameProcess = FindGameProcess();
             if (gameProcess != null)
@@ -51,12 +65,11 @@ namespace MemoryRandomizer
                     {
                         initialReadDone = true;
                         InitiateDressspheres(initialMemoryBytes);
+                        // Initiate randomization
+                        Randomizer.Shuffle(DresssphereMapping.RandomizableDresspheres);
+                        DresssphereMapping.CreateMapping();
                     }
                 }
-
-                // Initiate randomization
-                Randomizer.Shuffle(DresssphereMapping.RandomizableDresspheres);
-                DresssphereMapping.CreateMapping();
 
                 // start monitoring
                 while (true)
@@ -86,6 +99,7 @@ namespace MemoryRandomizer
                             Console.WriteLine("Closing application...");
                             break;
                         }
+                        SaveMapping();
                         Thread.Sleep(500);
                     }
                 }
@@ -141,6 +155,12 @@ namespace MemoryRandomizer
                     DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count = newCount;
                 }
             }
+        }
+
+        private static void SaveMapping()
+        {
+            var jsonString = JsonConvert.SerializeObject(DresssphereMapping.MappingList);
+            File.WriteAllText("Mapping.txt", jsonString);
         }
     }
 }
