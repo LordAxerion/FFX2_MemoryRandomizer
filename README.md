@@ -14,6 +14,8 @@ One more note: The randomizer cannot randomize the intro (at least not yet). You
 If you randomize the GarmentGrids you will have to remove the FirstStep GG from the girls equipment and replace it with your new one.  
 If you randomize both, you might want to remove the DS from FirstStep once you got it, since the old one (Thief, Warrior, Songstress, Gunner) will still be on it, even if you don't have them.
 
+**Please note that the Garment Grid randomizing currently doesn't work as intended, you will get more GGs than you should have**
+
 ## FAQ
 **Will there be a GUI at some point?**
 - No, unless you write one yourself ;)
@@ -29,7 +31,7 @@ If you randomize both, you might want to remove the DS from FirstStep once you g
 - Note that sometimes the random algorithm shuffles the same dresssphere on the index it was at before. It usually happens only to one.
 
 **What are you currently working on?**
-- Randomizing Garment Grids vs Dresspheres -> if you pick up a dressphere you might get a Garment Grid instead and vice versa~
+- Fixing the GG randomization which just blew the project up big time :'D
 
 **Something really bugs me! >:(**
 - That is fine, open an issue or contact me and I will try to solve your problem. You can also contribute code yourself :)
