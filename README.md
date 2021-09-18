@@ -1,9 +1,10 @@
 # FFX2_MemoryRandomizer
-A FFX-2 randomizer that randomizes gotten dressspheres in memory.
+A FFX-2 randomizer that randomizes gotten dressspheres and garmentgrids in memory.
 
 ## How to run it
 - To run the code either compile it yourself or get the published executable.
 - Start your game, then start the exe. The program will attach itself to your game process automatically.
+- The application will ask you what you want to randomize, you can randomize dressspheres and/or garmentgrids.
 - Keep the application running while you play the game.
 - The program will automatically create a save file in its root location called Mapping.txt. 
 - At the start of the program it will attempt to read that file. If you want to start anew move it somewhere else, rename or delete it. 
@@ -25,7 +26,7 @@ The game said I picked up Dressphere XX, but I got a different one.
 - Yes the game will give you the ones which you should get, for example Festivalist from Brother after talking to him. The Mod will then switch it with something else. Currently it is not possible to see what you got in the pickup text.
 
 What are you currently working on?
-- Randomizing Garment Grids
+- Randomizing Garment Grids vs Dresspheres -> if you pick up a dressphere you might get a Garment Grid instead and vice versa~
 
 Can I contribute?
 - Of course, I made this because I wanted a randomizer for this game, the better it gets, the happier I am.
