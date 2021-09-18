@@ -7,6 +7,8 @@ A FFX-2 randomizer that randomizes gotten dressspheres in memory.
 - Keep the application running while you play the game.
 - That's it, have fun :)
 
+One more note: The randomizer cannot randomize the intro (at least not yet). You have to finish the intro and once you are on the airship, open the menu and remove all dressspheres from the First Steps garment grid. This will remove the Dressspheres from your list and instead you will have the randomized ones.
+
 ## FAQ
 Will there be a GUI at some point?
 - No, unless you write one yourself ;)
@@ -19,3 +21,5 @@ Can I contribute?
 
 Can I copy your code, or sell it?
 - Look in the license file. You can do whatever you want, but being named would be nice of you.
+
+If you have any further questions feel free to contact me on Discord: Earinor#4167
