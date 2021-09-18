@@ -47,23 +47,23 @@ namespace MemoryRandomizer
 
             // Initial read
             while (!initialReadDone)
+            {
+                byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
+                if (bytesOut <= 0)
                 {
-                    byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
-                    if (bytesOut <= 0)
-                    {
-                        FindAndOpenGameProcess();
-                    }
-                    else
-                    {
-                        initialReadDone = true;
-                        InitiateDressspheres(initialMemoryBytes);
-                        // Initiate randomization
-                        Randomizer.Shuffle(DresssphereMapping.RandomizableDresspheres);
-                        DresssphereMapping.CreateMapping();
-                    }
+                    FindAndOpenGameProcess();
                 }
+                else
+                {
+                    initialReadDone = true;
+                    InitiateDressspheres(initialMemoryBytes);
+                    // Initiate randomization
+                    Randomizer.Shuffle(DresssphereMapping.RandomizableDresspheres);
+                    DresssphereMapping.CreateMapping();
+                }
+            }
 
-                // start monitoring
+            // start monitoring
             while (true)
             {
                 bytesOut = 0;
