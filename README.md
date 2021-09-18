@@ -32,7 +32,7 @@ What are you currently working on?
 - Randomizing Garment Grids vs Dresspheres -> if you pick up a dressphere you might get a Garment Grid instead and vice versa~
 
 Something really bugs me! >:(
-- That is fine, open an issue or contact me and I will try to solve your problem. You can also fix it yourself and I will check and decide if I want to merge it into the master branch :)
+- That is fine, open an issue or contact me and I will try to solve your problem. You can also contribute code yourself :)
 
 Can I contribute?
 - Of course, I made this because I wanted a randomizer for this game, the better it gets, the happier I am.
