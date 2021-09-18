@@ -38,6 +38,6 @@ If you randomize both, you might want to remove the DS from FirstStep once you g
 - Of course, I made this because I wanted a randomizer for this game, the better it gets, the happier I am.
 
 **Can I copy your code, or sell it?**
-- Look in the license file. You can do whatever you want, but being named would be nice of you.
+- Look in the license file. You can do whatever you want, but being named would be nice.
 
 If you have any further questions feel free to contact me on Discord: Earinor#4167
