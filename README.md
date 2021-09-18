@@ -23,10 +23,16 @@ What does the mod do exactly? Will it mess with my game?
 - If you save a game in which you used the mod you will have the same randomized dressspheres even if the mod isn't running anymore.
 
 The game said I picked up Dressphere XX, but I got a different one.
-- Yes the game will give you the ones which you should get, for example Festivalist from Brother after talking to him. The Mod will then switch it with something else. Currently it is not possible to see what you got in the pickup text.
+- Yes the game will give you the ones which you should get, for example Festivalist from Brother after talking to him. The Mod will then switch it with something else. Currently it is not possible to see what you got in the pickup text. Once you open your menu you will see that you got a random one.
+
+One of my dresspheres is what it should be instead of a random one.
+- Note that sometimes the random algorithm shuffles the same dresssphere on the index it was at before. It usually happens only to one.
 
 What are you currently working on?
 - Randomizing Garment Grids vs Dresspheres -> if you pick up a dressphere you might get a Garment Grid instead and vice versa~
+
+Something really bugs me! >:(
+- That is fine, open an issue or contact me and I will try to solve your problem. You can also fix it yourself and I will check and decide if I want to merge it into the master branch :)
 
 Can I contribute?
 - Of course, I made this because I wanted a randomizer for this game, the better it gets, the happier I am.
