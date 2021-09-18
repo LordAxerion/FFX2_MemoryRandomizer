@@ -17,6 +17,10 @@ One more note: The randomizer cannot randomize the intro (at least not yet). You
 Will there be a GUI at some point?
 - No, unless you write one yourself ;)
 
+What does the mod do exactly? Will it mess with my game?
+- The mod is working in the games process memory. It doesn't touch the binary files, or any ressources, which means that if you start a new game without the mod attached, everything will work as intended. 
+- If you save a game in which you used the mod you will have the same randomized dressspheres even if the mod isn't running anymore.
+
 What are you currently working on?
 - Randomizing Garment Grids
 
