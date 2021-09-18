@@ -7,7 +7,6 @@ namespace MemoryRandomizer
     class Dresssphere
     {
         public ushort Address { get; set; }
-        public bool Received { get; set; }
         public string Name { get; set; }
         public uint Index { get; set; }
         // Some Dressspheres are in memory, but they will always stay on 0
@@ -15,11 +14,10 @@ namespace MemoryRandomizer
         public bool Available { get; set; }
         public uint Count { get; set; }
 
-        public Dresssphere(uint index, ushort address, bool received, string name, bool available, uint count = 0)
+        public Dresssphere(uint index, ushort address, string name, bool available, uint count = 0)
         {
             Index = index;
             Address = address;
-            Received = received;
             Name = name;
             Available = available;
             Count = count;

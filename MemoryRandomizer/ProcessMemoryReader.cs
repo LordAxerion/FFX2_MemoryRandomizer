@@ -119,7 +119,7 @@ namespace FFX2MemoryReader
             {
                 IntPtr p_BytesWritten;
 
-                ProcessMemoryReaderApi.WriteProcessMemory(handle, memoryAdress, buffer, 0x1E, out p_BytesWritten);
+                ProcessMemoryReaderApi.WriteProcessMemory(handle, memoryAdress, buffer, buffer.Length, out p_BytesWritten);
                 bytesWritten = p_BytesWritten.ToInt32();
             }
             catch

@@ -7,9 +7,9 @@ namespace MemoryRandomizer
 {
     public class Serializer
     {
-        public void SaveDresssphereMapping(string saveFile)
+        public void SaveDresssphereMapping<T>(string saveFile, T mappingList)
         {
-            var jsonString = JsonConvert.SerializeObject(DresssphereMapping.MappingList);
+            var jsonString = JsonConvert.SerializeObject(mappingList);
             File.WriteAllText(saveFile, jsonString);
         }
 
