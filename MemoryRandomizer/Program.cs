@@ -24,6 +24,7 @@ namespace MemoryRandomizer
         private static int bytesOut;
         private static int bytesIn;
 
+        private static Process gameProcess;
 
         static void Main(string[] args)
         {
@@ -42,24 +43,15 @@ namespace MemoryRandomizer
             }
 
             // Attach to process
-            Process gameProcess = FindGameProcess();
-            if (gameProcess != null)
-            {
-                mReader = new ProcessMemoryReader(gameProcess);
-                mReader.OpenProcess();
+            FindAndOpenGameProcess();
 
-                // Initial read
-                while (!initialReadDone)
+            // Initial read
+            while (!initialReadDone)
                 {
                     byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
                     if (bytesOut <= 0)
                     {
-                        gameProcess = FindGameProcess();
-                        if (gameProcess != null)
-                        {
-                            mReader = new ProcessMemoryReader(gameProcess);
-                            mReader.OpenProcess();
-                        }
+                        FindAndOpenGameProcess();
                     }
                     else
                     {
@@ -72,36 +64,30 @@ namespace MemoryRandomizer
                 }
 
                 // start monitoring
-                while (true)
+            while (true)
+            {
+                bytesOut = 0;
+                byte[] memoryBytes = mReader.ReadMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
+                if (bytesOut <= 0)
                 {
-                    bytesOut = 0;
-                    byte[] memoryBytes = mReader.ReadMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOut);
-                    if (bytesOut <= 0)
-                    {
-                        gameProcess = FindGameProcess();
-                        if (gameProcess != null)
-                        {
-                            mReader = new ProcessMemoryReader(gameProcess);
-                            mReader.OpenProcess();
-                        }
-                    }
-                    else
-                    {
-                        // check byteArray for changes -> apply changes to mapping 
-                        CheckReadBytes(memoryBytes);
+                    FindAndOpenGameProcess();
+                }
+                else
+                {
+                    // check byteArray for changes -> apply changes to mapping 
+                    CheckReadBytes(memoryBytes);
 
-                        // Write mapping data to memory
-                        CreateByteArray(newByteArray);
-                        int error = mReader.WriteMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArray, out bytesIn);
-                        if (error != 0)
-                        {
-                            Console.WriteLine($"Write Memory returned with error code {error}");
-                            Console.WriteLine("Closing application...");
-                            break;
-                        }
-                        SaveMapping();
-                        Thread.Sleep(500);
+                    // Write mapping data to memory
+                    CreateByteArray(newByteArray);
+                    int error = mReader.WriteMemory((IntPtr)((uint)gameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArray, out bytesIn);
+                    if (error != 0)
+                    {
+                        Console.WriteLine($"Write Memory returned with error code {error}");
+                        Console.WriteLine("Closing application...");
+                        break;
                     }
+                    SaveMapping();
+                    Thread.Sleep(500);
                 }
             }
         }
@@ -130,7 +116,7 @@ namespace MemoryRandomizer
             foreach (Tuple<Dresssphere, Dresssphere> ds in DresssphereMapping.MappingList)
             {
                 newByteArray[ds.Item2.Index] = Convert.ToByte(ds.Item2.Count);
-                Console.WriteLine($"{ds.Item1.Name}, {ds.Item1.Count} -> {ds.Item2.Name}, {ds.Item2.Count}");
+                // Console.WriteLine($"{ds.Item1.Name}, {ds.Item1.Count} -> {ds.Item2.Name}, {ds.Item2.Count}");
             }
         }
 
@@ -161,6 +147,16 @@ namespace MemoryRandomizer
         {
             var jsonString = JsonConvert.SerializeObject(DresssphereMapping.MappingList);
             File.WriteAllText("Mapping.txt", jsonString);
+        }
+
+        private static void FindAndOpenGameProcess()
+        {
+            gameProcess = FindGameProcess();
+            if (gameProcess != null)
+            {
+                mReader = new ProcessMemoryReader(gameProcess);
+                mReader.OpenProcess();
+            }
         }
     }
 }
