@@ -55,7 +55,7 @@ namespace MemoryRandomizer
             // Attach to process
             FindAndOpenGameProcess();
             // Initial read
-            DoInitialReadsOrShuffle();
+            DoInitialReadsAndShuffle();
 
             // start monitoring
             while (true)
@@ -229,7 +229,7 @@ namespace MemoryRandomizer
 
         }
 
-        private static void DoInitialReadsOrShuffle()
+        private static void DoInitialReadsAndShuffle()
         {
             while (!initialReadDoneDS)
             {
