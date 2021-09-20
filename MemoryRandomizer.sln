@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MemoryRandomizer", "MemoryR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryRandomizer.UI", "MemoryRandomizer.UI\MemoryRandomizer.UI.csproj", "{EBC592D0-4DA2-4643-98BF-A4D7F41A457B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryRandomizer.Core", "MemoryRandomizer.Core\MemoryRandomizer.Core.csproj", "{27ACFD46-9406-43F7-9CA1-9FC50903308F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EBC592D0-4DA2-4643-98BF-A4D7F41A457B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBC592D0-4DA2-4643-98BF-A4D7F41A457B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBC592D0-4DA2-4643-98BF-A4D7F41A457B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27ACFD46-9406-43F7-9CA1-9FC50903308F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27ACFD46-9406-43F7-9CA1-9FC50903308F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27ACFD46-9406-43F7-9CA1-9FC50903308F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27ACFD46-9406-43F7-9CA1-9FC50903308F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

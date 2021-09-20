@@ -13,12 +13,10 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="Memory Randomizer" Height="450" Width="800">
+        Title="Memory Randomizer" Height="720" Width="1280">
     <TabControl Style="{StaticResource MaterialDesignTabControl}">
         <TabItem Header="Dressspheres">
-            <Grid>
-
-            </Grid>
+            <local:DresssphereControl></local:DresssphereControl>
         </TabItem>
     </TabControl>
 </Window>
