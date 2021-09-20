@@ -18,7 +18,7 @@ If you randomize both, you might want to remove the DS from FirstStep once you g
 
 ## FAQ
 **Will there be a GUI at some point?**
-- No, unless you write one yourself ;)
+- Actually yes, since we already have a collaborator willing to do that :D
 
 **What does the mod do exactly? Will it mess with my game?**
 - The mod is working in the games process memory. It doesn't touch the binary files, or any ressources, which means that if you start a new game without the mod attached, everything will work as intended. 
@@ -32,6 +32,8 @@ If you randomize both, you might want to remove the DS from FirstStep once you g
 
 **What are you currently working on?**
 - Fixing the GG randomization which just blew the project up big time :'D
+- There is a GUI coming ;)
+- To get my mind off of GGs, I will also randomize the abilities
 
 **Something really bugs me! >:(**
 - That is fine, open an issue or contact me and I will try to solve your problem. You can also contribute code yourself :)
