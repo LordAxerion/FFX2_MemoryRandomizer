@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    class GarmentGridMapping
+    public class GarmentGridMapping
     {
         public static List<Tuple<GarmentGrid, GarmentGrid>> MappingList = new List<Tuple<GarmentGrid, GarmentGrid>>();
 

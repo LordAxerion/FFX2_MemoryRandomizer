@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    class DresssphereMapping
+    public class DresssphereMapping
     {
         public static List<Tuple<Dresssphere, Dresssphere>> MappingList = new List<Tuple<Dresssphere, Dresssphere>>();
 
