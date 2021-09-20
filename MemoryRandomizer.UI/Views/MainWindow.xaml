@@ -14,9 +14,26 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
         Title="Memory Randomizer" Height="720" Width="1280">
-    <TabControl Style="{StaticResource MaterialDesignTabControl}">
-        <TabItem Header="Dressspheres">
-            <local:DresssphereControl></local:DresssphereControl>
-        </TabItem>
-    </TabControl>
+    <Window.DataContext>
+        <local:MainViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TabControl Style="{StaticResource MaterialDesignTabControl}">
+            <TabItem Header="Dressspheres">
+                <local:DresssphereControl></local:DresssphereControl>
+            </TabItem>
+        </TabControl>
+        
+        <materialDesign:Card>
+            <StackPanel>
+                <Label>Errors:</Label>
+                <TextBlock Text="{Binding Errors}"></TextBlock>
+            </StackPanel>
+        </materialDesign:Card>
+    </Grid>
 </Window>
