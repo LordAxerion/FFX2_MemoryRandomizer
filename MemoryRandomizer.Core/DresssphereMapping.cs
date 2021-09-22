@@ -4,11 +4,11 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class DresssphereMapping
+    public class DresssphereMapping : IMapping<Dresssphere>
     {
-        public static List<Tuple<Dresssphere, Dresssphere>> MappingList = new List<Tuple<Dresssphere, Dresssphere>>();
+        public List<Tuple<Dresssphere, Dresssphere>> MappingList { get; set; } = new List<Tuple<Dresssphere, Dresssphere>>();
 
-        public static List<Dresssphere> Dresspheres = new List<Dresssphere>()
+        public List<Dresssphere> Dresspheres = new List<Dresssphere>()
         {
             new Dresssphere(0, 0x4fbc, "Nothing", false),
             new Dresssphere(1, 0x4fbd, "Gunner", true),
@@ -65,7 +65,7 @@ namespace MemoryRandomizer.Core
             new Dresssphere(29, 0x4fd9, "Festivalist", true)
         };
 
-        public static void CreateMapping()
+        public void CreateMapping()
         {
             int i = 0;
             foreach (Dresssphere ds in Dresspheres)
@@ -82,7 +82,7 @@ namespace MemoryRandomizer.Core
                 }
             }
         }
-        public static void InitiateDressspheres(byte[] initialByteArray)
+        public void Initiate(byte[] initialByteArray)
         {
             int i = 0;
             foreach (byte b in initialByteArray)
