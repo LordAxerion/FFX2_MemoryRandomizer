@@ -50,6 +50,7 @@ namespace MemoryRandomizer.UI
 
         public MainViewModel()
         {
+            this.gameManager = new GameManager();
             this.DresssphereViewModel = new DresssphereViewModel();
             this.GarmentGridViewModel = new GarmentGridViewModel();
 
