@@ -11,10 +11,12 @@ namespace MemoryRandomizer
     {
         const uint startofDresssphereSaves = 0xA00D1C; // 0x9FBD60; // in process (this - 0x4fbc = ProcessStart)
         const uint startOfGGSaves = 0xA00D14;
+        const uint startOfAbilitySaves = 0xA022A0;
         const uint ptrOffset = 0x4fbc; // Process + 0x4fbc = Dressspheres
         const uint offset = 0;
         const string DresssphereSaveFileName = "DresssphereRando.txt";
         const string GGSaveFileName = "GGRando.txt";
+        const string BothSaveFileName = "FullRando.txt";
         private static ProcessMemoryReader mReader;
         private static BinaryReader br;
 
@@ -22,6 +24,7 @@ namespace MemoryRandomizer
 
         private static bool initialReadDoneDS = false;
         private static bool initialReadDoneGG = false;
+        private static bool initialReadDoneBoth = false;
         private static byte[] newByteArrayDS = new byte[0x1E];
         private static byte[] newByteArrayGG = new byte[0x8];
         private static int bytesOutDS;
@@ -34,20 +37,30 @@ namespace MemoryRandomizer
 
         private static bool randomizeDS = false;
         private static bool randomizeGG = false;
+        private static bool randomizeBoth = false;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Randomize Dresspheres? y/n");
+            Console.WriteLine("Randomize and mix up Dressspheres and GarmentGrids? y/n");
             var keyIn = Console.ReadKey();
-            if(keyIn.Key == ConsoleKey.Y)
-            {
-                randomizeDS = true;
-            }
-            Console.WriteLine("Randomize GarmentGrids? y/n");
-            keyIn = Console.ReadKey();
             if (keyIn.Key == ConsoleKey.Y)
             {
-                randomizeGG = true;
+                randomizeBoth = true;
+            }
+            if (!randomizeBoth)
+            {
+                Console.WriteLine("Randomize Dresspheres? y/n");
+                keyIn = Console.ReadKey();
+                if (keyIn.Key == ConsoleKey.Y)
+                {
+                    randomizeDS = true;
+                }
+                Console.WriteLine("Randomize GarmentGrids? y/n");
+                keyIn = Console.ReadKey();
+                if (keyIn.Key == ConsoleKey.Y)
+                {
+                    randomizeGG = true;
+                }
             }
 
             // read save file
@@ -70,7 +83,24 @@ namespace MemoryRandomizer
                 }
                 else
                 {
-                    if (randomizeDS)
+                    if (randomizeBoth)
+                    {
+                        // check byteArray for changes -> apply changes to mapping 
+                        CheckReadBytesBoth(memoryBytesDs, memoryBytesGG);
+                        // Write mapping data to memory
+                        newByteArrayGG = new byte[0x8];
+                        CreateByteArrayBoth(newByteArrayDS, newByteArrayGG);
+                        int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
+                        int error2 = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
+                        if (error != 0 || error2 != 0)
+                        {
+                            Console.WriteLine($"Write Memory returned with error code {error}");
+                            Console.WriteLine("Closing application...");
+                            break;
+                        }
+                        mSerializer.SaveMapping(BothSaveFileName, RandomizableItemMapping.MappingList);
+                    }
+                    if (randomizeDS && !randomizeBoth)
                     {
                         // check byteArray for changes -> apply changes to mapping 
                         CheckReadBytesDS(memoryBytesDs);
@@ -83,10 +113,10 @@ namespace MemoryRandomizer
                             Console.WriteLine("Closing application...");
                             break;
                         }
-                        mSerializer.SaveDresssphereMapping(DresssphereSaveFileName, DresssphereMapping.MappingList);
+                        mSerializer.SaveMapping(DresssphereSaveFileName, DresssphereMapping.MappingList);
                     }
 
-                    if (randomizeGG)
+                    if (randomizeGG && !randomizeBoth)
                     {
                         CheckReadBytesGG(memoryBytesGG);
                         newByteArrayGG = new byte[0x8];
@@ -99,7 +129,7 @@ namespace MemoryRandomizer
                             Console.WriteLine("Closing application...");
                             break;
                         }
-                        mSerializer.SaveDresssphereMapping(GGSaveFileName, GarmentGridMapping.MappingList);
+                        mSerializer.SaveMapping(GGSaveFileName, GarmentGridMapping.MappingList);
                     }
                     Thread.Sleep(500);
                 }
@@ -146,6 +176,24 @@ namespace MemoryRandomizer
             }
         }
 
+        private static void CreateByteArrayBoth(byte[] newByteArrayDS, byte[] newByteArrayGG)
+        {
+            foreach (Tuple<RandomizableItem, RandomizableItem> tuple in RandomizableItemMapping.MappingList)
+            {
+                if (tuple.Item2.ItemType == RandoItemType.Dresssphere)
+                {
+                    newByteArrayDS[tuple.Item2.Index] = Convert.ToByte(tuple.Item2.Count);
+                }
+                else if(tuple.Item2.GotIt)
+                {
+                    var currentByte = newByteArrayGG[tuple.Item2.ByteIndex];
+                    var mask = 1 << tuple.Item2.BitIndex;
+                    newByteArrayGG[tuple.Item2.ByteIndex] = (byte)(currentByte ^ (byte)mask);
+                }
+                Console.WriteLine($"{tuple.Item1.Name}, {tuple.Item1.Count} -> {tuple.Item2.Name}, {tuple.Item2.Count}");
+            }
+        }
+
         private static void CreateByteArrayGG(byte[] newByteArray)
         {
             foreach (Tuple<GarmentGrid, GarmentGrid> gg in GarmentGridMapping.MappingList)
@@ -172,9 +220,43 @@ namespace MemoryRandomizer
                 uint newCount = readByteArray[tuple.Item2.Index];
                 if (tuple.Item2.Count != newCount)
                 {
-                    DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count = newCount;
-                    DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count = newCount;
+                    int diff = (int)(newCount - tuple.Item2.Count);
+                    DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count += (uint)diff;
+                    DresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count += (uint)diff;
                 }
+            }
+        }
+
+        private static void CheckReadBytesBoth(byte[] readByteArrayDS, byte[] readByteArrayGG)
+        {
+            foreach (var tuple in RandomizableItemMapping.MappingList)
+            {
+                Console.WriteLine($"{tuple.Item1.Name}, {tuple.Item1.Count} -> {tuple.Item2.Name}, {tuple.Item2.Count}");
+                if (tuple.Item2.ItemType == RandoItemType.Dresssphere)
+                {
+                    int newCount = readByteArrayDS[tuple.Item2.Index];
+                    bool gotIt = newCount > 0;
+                    if (tuple.Item2.GotIt != gotIt)
+                    {
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item1.Count = newCount;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item2.Count = newCount;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item1.GotIt = gotIt;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item2.GotIt = gotIt;
+                    }
+                }   
+                else
+                {
+                    byte mask = (byte)(1 << tuple.Item2.BitIndex);
+                    bool isSet = (readByteArrayGG[tuple.Item2.ByteIndex] & mask) != 0;
+                    if (tuple.Item2.GotIt != isSet)
+                    {
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item1.GotIt = isSet;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item2.GotIt = isSet;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item1.Count = 1;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item2.Count = 1;
+                    }
+                }
+                Console.WriteLine($"{tuple.Item1.Name}, {tuple.Item1.Count} -> {tuple.Item2.Name}, {tuple.Item2.Count}");
             }
         }
 
@@ -200,6 +282,20 @@ namespace MemoryRandomizer
         {
             try
             {
+                if (randomizeBoth)
+                {
+                    RandomizableItemMapping.MappingList.Clear();
+                    RandomizableItemMapping.MappingList = mSerializer.LoadMapping<List<Tuple<RandomizableItem, RandomizableItem>>>(BothSaveFileName);
+                    initialReadDoneBoth = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Could not read Dresssphere save file {BothSaveFileName}");
+                Console.WriteLine("Initiating new mapping...");
+            }
+            try
+            {
                 if (randomizeDS)
                 {
                     DresssphereMapping.MappingList.Clear();
@@ -209,7 +305,7 @@ namespace MemoryRandomizer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Could not read Dresssphere save file {DresssphereSaveFileName}: {ex}");
+                Console.WriteLine($"Could not read Dresssphere save file {DresssphereSaveFileName}");
                 Console.WriteLine("Initiating new mapping...");
             }
             try
@@ -223,7 +319,7 @@ namespace MemoryRandomizer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Could not read save file {GGSaveFileName}: {ex}");
+                Console.WriteLine($"Could not read save file {GGSaveFileName}");
                 Console.WriteLine("Initiating new mapping...");
             }
 
@@ -231,6 +327,22 @@ namespace MemoryRandomizer
 
         private static void DoInitialReadsAndShuffle()
         {
+            while(randomizeBoth && !initialReadDoneBoth)
+            {
+                byte[] initialMemoryBytesDS = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOutDS);
+                byte[] initialMemoryBytesGG = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), 0x8, out bytesOutGG);
+                if(bytesOutDS <= 0 || bytesOutGG <= 0)
+                {
+                    FindAndOpenGameProcess();
+                }
+                else
+                {
+                    initialReadDoneBoth = true;
+                    RandomizableItemMapping.InitiateDressspheres(initialMemoryBytesDS, initialMemoryBytesGG);
+                    Randomizer.Shuffle(RandomizableItemMapping.RandomizableItems);
+                    RandomizableItemMapping.CreateMapping();
+                }
+            }
             while (!initialReadDoneDS)
             {
                 byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOutDS);
