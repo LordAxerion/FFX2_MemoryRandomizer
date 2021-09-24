@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    enum RandoItemType
+    public enum RandoItemType
     {
         Dresssphere = 0,
         GarmentGrid = 1,

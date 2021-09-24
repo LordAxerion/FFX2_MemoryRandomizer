@@ -15,12 +15,31 @@ namespace MemoryRandomizer.Core
             ByteArrayHandler.ggMapping = garmentGridMapping;
         }
 
+
         internal static void CreateByteArrayDS(byte[] newByteArray)
         {
             foreach (Tuple<Dresssphere, Dresssphere> ds in dresssphereMapping.MappingList)
             {
                 newByteArray[ds.Item2.Index] = Convert.ToByte(ds.Item2.Count);
                 // Console.WriteLine($"{ds.Item1.Name}, {ds.Item1.Count} -> {ds.Item2.Name}, {ds.Item2.Count}");
+            }
+        }
+
+        internal static void CreateByteArrayBoth(byte[] newByteArrayDS, byte[] newByteArrayGG)
+        {
+            foreach (Tuple<RandomizableItem, RandomizableItem> tuple in RandomizableItemMapping.MappingList)
+            {
+                if (tuple.Item2.ItemType == RandoItemType.Dresssphere)
+                {
+                    newByteArrayDS[tuple.Item2.Index] = Convert.ToByte(tuple.Item2.Count);
+                }
+                else if (tuple.Item2.GotIt)
+                {
+                    var currentByte = newByteArrayGG[tuple.Item2.ByteIndex];
+                    var mask = 1 << tuple.Item2.BitIndex;
+                    newByteArrayGG[tuple.Item2.ByteIndex] = (byte)(currentByte ^ (byte)mask);
+                }
+                Console.WriteLine($"{tuple.Item1.Name}, {tuple.Item1.Count} -> {tuple.Item2.Name}, {tuple.Item2.Count}");
             }
         }
 
@@ -50,9 +69,43 @@ namespace MemoryRandomizer.Core
                 uint newCount = readByteArray[tuple.Item2.Index];
                 if (tuple.Item2.Count != newCount)
                 {
-                    dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count = newCount;
-                    dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count = newCount;
+                    int diff = (int)(newCount - tuple.Item2.Count);
+                    dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count += (uint)diff;
+                    dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count += (uint)diff;
                 }
+            }
+        }
+
+        internal static void CheckReadBytesBoth(byte[] readByteArrayDS, byte[] readByteArrayGG)
+        {
+            foreach (var tuple in RandomizableItemMapping.MappingList)
+            {
+                Console.WriteLine($"{tuple.Item1.Name}, {tuple.Item1.Count} -> {tuple.Item2.Name}, {tuple.Item2.Count}");
+                if (tuple.Item2.ItemType == RandoItemType.Dresssphere)
+                {
+                    int newCount = readByteArrayDS[tuple.Item2.Index];
+                    bool gotIt = newCount > 0;
+                    if (tuple.Item2.GotIt != gotIt)
+                    {
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item1.Count = newCount;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item2.Count = newCount;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item1.GotIt = gotIt;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item2.GotIt = gotIt;
+                    }
+                }
+                else
+                {
+                    byte mask = (byte)(1 << tuple.Item2.BitIndex);
+                    bool isSet = (readByteArrayGG[tuple.Item2.ByteIndex] & mask) != 0;
+                    if (tuple.Item2.GotIt != isSet)
+                    {
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item1.GotIt = isSet;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item2.GotIt = isSet;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item1.Count = 1;
+                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item2.Count = 1;
+                    }
+                }
+                Console.WriteLine($"{tuple.Item1.Name}, {tuple.Item1.Count} -> {tuple.Item2.Name}, {tuple.Item2.Count}");
             }
         }
 

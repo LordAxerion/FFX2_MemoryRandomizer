@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    class Abilities
+    internal class Abilities
     {
         public static List<RandomizableItem> AbilityList = new List<RandomizableItem>()
         {
