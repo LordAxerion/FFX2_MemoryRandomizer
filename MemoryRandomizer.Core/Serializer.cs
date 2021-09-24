@@ -7,7 +7,7 @@ namespace MemoryRandomizer.Core
 {
     public class Serializer
     {
-        public void SaveDresssphereMapping<T>(string saveFile, T mappingList)
+        public void SaveMapping<T>(string saveFile, T mappingList)
         {
             var jsonString = JsonConvert.SerializeObject(mappingList);
             File.WriteAllText(saveFile, jsonString);

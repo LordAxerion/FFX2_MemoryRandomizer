@@ -12,23 +12,33 @@ namespace MemoryRandomizer
     {
         private static bool randomizeDS = false;
         private static bool randomizeGG = false;
+        private static bool randomizeBoth = false;
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Randomize Dresspheres? y/n");
+            Console.WriteLine("Randomize and mix up Dressspheres and GarmentGrids? y/n");
             var keyIn = Console.ReadKey();
-            if(keyIn.Key == ConsoleKey.Y)
-            {
-                randomizeDS = true;
-            }
-            Console.WriteLine("Randomize GarmentGrids? y/n");
-            keyIn = Console.ReadKey();
             if (keyIn.Key == ConsoleKey.Y)
             {
-                randomizeGG = true;
+                randomizeBoth = true;
+            }
+            if (!randomizeBoth)
+            {
+                Console.WriteLine("Randomize Dresspheres? y/n");
+                keyIn = Console.ReadKey();
+                if (keyIn.Key == ConsoleKey.Y)
+                {
+                    randomizeDS = true;
+                }
+                Console.WriteLine("Randomize GarmentGrids? y/n");
+                keyIn = Console.ReadKey();
+                if (keyIn.Key == ConsoleKey.Y)
+                {
+                    randomizeGG = true;
+                }
             }
 
-            new GameManager().Startup(randomizeDS, randomizeGG);
+            new GameManager().Startup(randomizeDS, randomizeGG, randomizeBoth);
         }
     }
 }
