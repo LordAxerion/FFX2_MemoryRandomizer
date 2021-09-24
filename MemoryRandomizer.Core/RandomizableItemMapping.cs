@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    class RandomizableItemMapping
+    public class RandomizableItemMapping
     {
         public static List<Tuple<RandomizableItem, RandomizableItem>> MappingList = new List<Tuple<RandomizableItem, RandomizableItem>>();
 

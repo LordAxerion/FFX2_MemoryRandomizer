@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    class RandomizableItem
+    public class RandomizableItem
     {
         public string Name { get; set; }
         public int Index { get; set; }

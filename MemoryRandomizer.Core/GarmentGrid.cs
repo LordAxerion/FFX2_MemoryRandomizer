@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    class GarmentGrid
+    public class GarmentGrid
     {
         public string Name { get; set; }
         public uint Index { get; set; }

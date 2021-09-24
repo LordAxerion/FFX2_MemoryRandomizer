@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    class Dresssphere
+    public class Dresssphere
     {
         public ushort Address { get; set; }
         public string Name { get; set; }

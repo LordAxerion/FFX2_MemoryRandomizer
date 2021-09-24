@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    class GarmentGridMapping
+    public class GarmentGridMapping : IMapping<GarmentGrid>
     {
-        public static List<Tuple<GarmentGrid, GarmentGrid>> MappingList = new List<Tuple<GarmentGrid, GarmentGrid>>();
+        public List<Tuple<GarmentGrid, GarmentGrid>> MappingList { get; set; } = new List<Tuple<GarmentGrid, GarmentGrid>>();
 
-        public static List<GarmentGrid> GarmentGrids = new List<GarmentGrid>()
+        public List<GarmentGrid> GarmentGrids = new List<GarmentGrid>()
         {
             new GarmentGrid(0,"First Steps"),
             new GarmentGrid(1, "Vanguard"),
@@ -144,7 +144,7 @@ namespace MemoryRandomizer
             new GarmentGrid(63, "Last Resort")
         };
 
-        public static void CreateMapping()
+        public void CreateMapping()
         {
             int i = 0;
             foreach (GarmentGrid gg in GarmentGrids)
@@ -155,7 +155,7 @@ namespace MemoryRandomizer
                 i++;
             }
         }
-        public static void InitiateGarmentGrids(byte[] initialByteArray)
+        public void Initiate(byte[] initialByteArray)
         {
             for (int i = 0; i < GarmentGrids.Count; i++)
             {

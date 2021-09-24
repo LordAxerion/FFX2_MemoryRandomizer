@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MemoryRandomizer
+namespace MemoryRandomizer.Core
 {
-    static class Randomizer
+    public static class Randomizer
     {
         private static Random rng = new Random();
 
