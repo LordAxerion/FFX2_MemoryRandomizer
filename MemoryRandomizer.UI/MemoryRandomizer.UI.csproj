@@ -12,6 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MemoryRandomizer.Core\MemoryRandomizer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="Views\GarmentGridControl.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>

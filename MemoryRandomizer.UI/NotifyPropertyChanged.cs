@@ -1,8 +1,11 @@
-﻿using System;
+﻿/// ==================================================
+/// Created by: Johann Heinzelreiter
+/// Edited by:  Paul Überlackner
+/// ==================================================
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace MemoryRandomizer.UI
 {

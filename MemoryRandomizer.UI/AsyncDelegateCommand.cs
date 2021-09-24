@@ -1,4 +1,9 @@
-﻿using System;
+﻿/// ==================================================
+/// Created by: Johann Heinzelreiter
+/// Edited by:  Paul Überlackner
+/// ==================================================
+
+using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 

@@ -1,13 +1,18 @@
-﻿using System;
+﻿using MemoryRandomizer.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace MemoryRandomizer.UI
 {
-    public class MainViewModel : INotifyPropertyChanged, IRandomizerViewModel
+    public class MainViewModel : IRandomizerViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly GameManager gameManager;
 
         public string Errors { get; set; }
         public string Path { get; set; }
@@ -40,6 +45,9 @@ namespace MemoryRandomizer.UI
         public DresssphereViewModel DresssphereViewModel { get; set; }
         public GarmentGridViewModel GarmentGridViewModel { get; set; }
 
+        public ICommand AttachCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
+
         public MainViewModel()
         {
             this.DresssphereViewModel = new DresssphereViewModel();
@@ -47,6 +55,22 @@ namespace MemoryRandomizer.UI
 
             this.DresssphereViewModel.PropertyChanged += (o, e) => { this.PropertyChanged?.Invoke(this, e); };
             this.GarmentGridViewModel.PropertyChanged += (o, e) => { this.PropertyChanged?.Invoke(this, e); };
+
+            this.AttachCommand = new AsyncDelegateCommand(this.Attach, _ => true);
+            this.DeleteCommand = new AsyncDelegateCommand(this.DeleteSave, _ => true);
         }
+
+        #region Command Implementations
+        public async Task Attach(object _)
+        {
+            await Task.Run(() => this.gameManager.Startup(this.DresssphereViewModel.Randomize, this.GarmentGridViewModel.Randomize));
+        }
+
+        public async Task DeleteSave(object _)
+        {
+            await this.DresssphereViewModel.DeleteSave(_);
+            await this.GarmentGridViewModel.DeleteSave(_);
+        }
+        #endregion
     }
 }
