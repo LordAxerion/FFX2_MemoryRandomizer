@@ -34,7 +34,7 @@
         <materialDesign:Card Grid.Row="0" Grid.ColumnSpan="3" Margin="10">
             <StackPanel Orientation="Horizontal" Margin="10">
                 <Label>Installation Folder:</Label>
-                <TextBlock Text="{Binding Path}"></TextBlock>
+                <TextBlock Text="{Binding Path}" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </materialDesign:Card>
 
