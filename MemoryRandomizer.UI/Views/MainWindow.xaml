@@ -34,7 +34,7 @@
         <materialDesign:Card Grid.Row="0" Grid.ColumnSpan="3" Margin="10">
             <StackPanel Orientation="Horizontal" Margin="10">
                 <Label>Installation Folder:</Label>
-                <TextBlock Text="{Binding Path}"></TextBlock>
+                <TextBlock Text="{Binding Path}" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
         </materialDesign:Card>
 
@@ -50,7 +50,7 @@
             </StackPanel>
         </materialDesign:Card>
 
-        <Button Grid.Row="1" Grid.Column="2" Margin="10 0 20 0" Command="{Binding DeleteCommand}">Delete all saves</Button>
+        <Button Grid.Row="1" Grid.Column="2" Margin="10 0 20 0" Command="{Binding DeleteCommand}" Cursor="Hand">Delete all saves</Button>
 
         <TabControl Grid.Row="2" Grid.ColumnSpan="3" Style="{StaticResource MaterialDesignTabControl}">
             <TabItem Header="Dressspheres" DataContext="{Binding DresssphereViewModel}">

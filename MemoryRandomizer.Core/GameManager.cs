@@ -30,31 +30,51 @@ namespace MemoryRandomizer.Core
 
         private static Process mGameProcess;
         private static Serializer mSerializer = new Serializer();
-        private static DresssphereMapping dm = new DresssphereMapping();
-        private static GarmentGridMapping ggm = new GarmentGridMapping();
+        private static DresssphereMapping dm;
+        private static GarmentGridMapping ggm;
+        private static RandomizableItemMapping rim;
+        private static ByteArrayHandler byteArrayHandler;
 
-        public void Startup(bool randomizeDS, bool randomizeGG, bool randomizeBoth)
+        /// <summary>
+        ///     Starts the randomization process.
+        /// </summary>
+        /// <param name="randomizeDS"></param>
+        /// <param name="randomizeGG"></param>
+        /// <param name="randomizeBoth"></param>
+        public void Startup(bool randomizeDS, bool randomizeGG, bool randomizeBoth, bool loadDS = true, bool loadGG = true, bool loadBoth = true)
         {
             // Read save files
-            if (randomizeBoth)
+            if (randomizeBoth && loadBoth)
             {
-                initialReadDoneBoth = SaveManager.ReadSaveFile(ggm, SaveManager.GGSaveFileName);
+                initialReadDoneBoth = SaveManager.ReadSaveFile(rim, SaveManager.GGSaveFileName);
             }
-            if (randomizeDS)
+            if (randomizeDS && loadDS)
             {
                 initialReadDoneDS = SaveManager.ReadSaveFile(dm, SaveManager.DresssphereSaveFileName);
             }
-            if (randomizeGG)
+            if (randomizeGG && loadGG)
             {
                 initialReadDoneGG = SaveManager.ReadSaveFile(ggm, SaveManager.GGSaveFileName);
             }
 
             // Attach to process
             FindAndOpenGameProcess();
+
             // Initial read
             DoInitialReadsAndShuffle(randomizeBoth);
+            byteArrayHandler = new ByteArrayHandler(dm, ggm, rim);
+
             // Start monitoring
-            Monitor(randomizeDS, randomizeGG, randomizeBoth);
+            try
+            {
+                Monitor(randomizeDS, randomizeGG, randomizeBoth);
+            }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.Message);
+                Console.WriteLine("Closing application...");
+                throw exc;
+            }
         }
 
         private void Monitor(bool randomizeDS, bool randomizeGG, bool randomizeBoth)
@@ -74,52 +94,53 @@ namespace MemoryRandomizer.Core
                     if (randomizeBoth)
                     {
                         // check byteArray for changes -> apply changes to mapping 
-                        ByteArrayHandler.CheckReadBytesBoth(memoryBytesDs, memoryBytesGG);
+                        byteArrayHandler.CheckReadBytesBoth(ref memoryBytesDs, ref memoryBytesGG);
                         // Write mapping data to memory
                         newByteArrayGG = new byte[0x8];
-                        ByteArrayHandler.CreateByteArrayBoth(newByteArrayDS, newByteArrayGG);
+                        byteArrayHandler.CreateByteArrayBoth(ref newByteArrayDS, ref newByteArrayGG);
+
                         int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
                         int error2 = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
-                        if (error != 0 || error2 != 0)
-                        {
-                            Console.WriteLine($"Write Memory returned with error code {error}");
-                            Console.WriteLine("Closing application...");
-                            break;
-                        }
-                        mSerializer.SaveMapping(SaveManager.BothSaveFileName, RandomizableItemMapping.MappingList);
+                        this.CheckError(error, error2);
+
+                        mSerializer.SaveMapping(SaveManager.BothSaveFileName, rim.MappingList);
                     }
                     if (randomizeDS && !randomizeBoth)
                     {
                         // check byteArray for changes -> apply changes to mapping 
-                        ByteArrayHandler.CheckReadBytesDS(memoryBytesDs);
+                        byteArrayHandler.CheckReadBytesDS(ref memoryBytesDs);
                         // Write mapping data to memory
-                        ByteArrayHandler.CreateByteArrayDS(newByteArrayDS);
+                        byteArrayHandler.CreateByteArrayDS(ref newByteArrayDS);
+
                         int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
-                        if (error != 0)
-                        {
-                            Console.WriteLine($"Write Memory returned with error code {error}");
-                            Console.WriteLine("Closing application...");
-                            break;
-                        }
+                        this.CheckError(error);
+
                         mSerializer.SaveMapping(SaveManager.DresssphereSaveFileName, dm.MappingList);
                     }
 
                     if (randomizeGG && !randomizeBoth)
                     {
-                        ByteArrayHandler.CheckReadBytesGG(memoryBytesGG);
+                        byteArrayHandler.CheckReadBytesGG(ref memoryBytesGG);
                         newByteArrayGG = new byte[0x8];
-                        ByteArrayHandler.CreateByteArrayGG(newByteArrayGG);
+                        byteArrayHandler.CreateByteArrayGG(ref newByteArrayGG);
 
                         int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
-                        if (error != 0)
-                        {
-                            Console.WriteLine($"Write Memory returned with error code {error}");
-                            Console.WriteLine("Closing application...");
-                            break;
-                        }
+                        this.CheckError(error);
+
                         mSerializer.SaveMapping(SaveManager.GGSaveFileName, ggm.MappingList);
                     }
                     Thread.Sleep(500);
+                }
+            }
+        }
+
+        private void CheckError(params int[] errors)
+        {
+            foreach (int error in errors)
+            {
+                if (error != 0)
+                {
+                    throw new IOException($"Write Memory returned with error code {error}");
                 }
             }
         }
@@ -161,49 +182,42 @@ namespace MemoryRandomizer.Core
             {
                 byte[] initialMemoryBytesDS = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOutDS);
                 byte[] initialMemoryBytesGG = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), 0x8, out bytesOutGG);
-                if (bytesOutDS <= 0 || bytesOutGG <= 0)
-                {
-                    FindAndOpenGameProcess();
-                }
-                else
-                {
-                    initialReadDoneBoth = true;
-                    RandomizableItemMapping.InitiateDressspheres(initialMemoryBytesDS, initialMemoryBytesGG);
-                    Randomizer.Shuffle(RandomizableItemMapping.RandomizableItems);
-                    RandomizableItemMapping.CreateMapping();
-                }
+
+                rim = new RandomizableItemMapping(initialMemoryBytesDS, initialMemoryBytesGG);
+                initialReadDoneBoth = DoInitialShuffle(rim, bytesOutDS <= 0 || bytesOutGG <= 0);
             }
             while (!initialReadDoneDS)
             {
                 byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOutDS);
-                if (bytesOutDS <= 0)
-                {
-                    FindAndOpenGameProcess();
-                }
-                else
-                {
-                    initialReadDoneDS = true;
-                    dm.Initiate(initialMemoryBytes);
-                    // Initiate randomization
-                    Randomizer.Shuffle(DresssphereMapping.RandomizableDresspheres);
-                    dm.CreateMapping();
-                }
+
+                dm = new DresssphereMapping(initialMemoryBytes);
+                initialReadDoneDS = DoInitialShuffle(dm, bytesOutDS <= 0);
             }
             while (!initialReadDoneGG)
             {
                 byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), 0x8, out bytesOutGG);
-                if (bytesOutGG <= 0)
-                {
-                    FindAndOpenGameProcess();
-                }
-                else
-                {
-                    initialReadDoneGG = true;
-                    ggm.Initiate(initialMemoryBytes);
-                    // Initiate randomization
-                    Randomizer.Shuffle(GarmentGridMapping.RandomizedGarmentGrids);
-                    ggm.CreateMapping();
-                }
+
+                ggm = new GarmentGridMapping(initialMemoryBytes);
+                initialReadDoneGG = DoInitialShuffle(ggm, bytesOutGG <= 0);
+            }
+        }
+
+        private static bool DoInitialShuffle<T>(IMapping<T> mapping, bool readSuccessful)
+        {
+            if (readSuccessful)
+            {
+                FindAndOpenGameProcess();
+
+                return false;
+            }
+            else
+            {
+                mapping.Initiate();
+                // Initiate randomization
+                Randomizer.Shuffle(mapping.RandomizableItems);
+                mapping.CreateMapping();
+
+                return true;
             }
         }
     }

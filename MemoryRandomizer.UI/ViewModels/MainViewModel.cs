@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace MemoryRandomizer.UI
@@ -50,6 +51,8 @@ namespace MemoryRandomizer.UI
 
         public MainViewModel()
         {
+            this.OpenPathDialog();
+
             this.gameManager = new GameManager();
             this.DresssphereViewModel = new DresssphereViewModel();
             this.GarmentGridViewModel = new GarmentGridViewModel();
@@ -64,14 +67,58 @@ namespace MemoryRandomizer.UI
         #region Command Implementations
         public async Task Attach(object _)
         {
-            await Task.Run(() => this.gameManager.Startup(this.DresssphereViewModel.Randomize, this.GarmentGridViewModel.Randomize));
+            try
+            {
+                await Task.Run(() => this.gameManager.Startup(
+                    this.DresssphereViewModel.Randomize,
+                    false, //this.GarmentGridViewModel.Randomize,
+                    false,
+                    this.DresssphereViewModel.LoadSave,
+                    false, //this.GarmentGridViewModel.LoadSave,
+                    false
+                ));
+            }
+            catch (Exception exc)
+            {
+                this.Errors = exc.Message;
+            }
         }
 
         public async Task DeleteSave(object _)
         {
-            await this.DresssphereViewModel.DeleteSave(_);
-            await this.GarmentGridViewModel.DeleteSave(_);
+            if (this.OpenDeletionDialog())
+            {
+                await this.DresssphereViewModel.DeleteSave(_);
+                await this.GarmentGridViewModel.DeleteSave(_);
+            }
         }
         #endregion
+
+        protected bool OpenDeletionDialog()
+        {
+            MessageBoxResult result = MessageBox.Show("Are you sure?", "Delete save files", MessageBoxButton.YesNo);
+            return result == MessageBoxResult.Yes;
+        }
+
+        protected void OpenPathDialog()
+        {
+            using (System.Windows.Forms.FolderBrowserDialog dialog = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                dialog.Description = "Select the path to your FFX-2 installation directory.";
+                dialog.UseDescriptionForTitle = true;
+                dialog.RootFolder = Environment.SpecialFolder.ProgramFilesX86;
+
+                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    this.Path = dialog.SelectedPath;
+                }
+                else
+                {
+                    Environment.Exit(0);
+                }
+            }
+        }
     }
 }

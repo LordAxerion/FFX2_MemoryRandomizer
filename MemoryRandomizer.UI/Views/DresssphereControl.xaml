@@ -38,6 +38,6 @@
             </StackPanel>
         </materialDesign:Card>
 
-        <Button Grid.Row="1" Grid.Column="4" Margin="10 0 20 0">Delete Save</Button>
+        <Button Grid.Row="1" Grid.Column="4" Margin="10 0 20 0" Command="{Binding DeleteCommand}">Delete Save</Button>
     </Grid>
 </UserControl>
