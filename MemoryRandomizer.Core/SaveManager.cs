@@ -27,22 +27,5 @@ namespace MemoryRandomizer.Core
                 return false;
             }
         }
-
-        public static bool ReadSaveFile(RandomizableItemMapping mapping, string fileName)
-        {
-            try
-            {
-                RandomizableItemMapping.MappingList.Clear();
-                RandomizableItemMapping.MappingList = mSerializer.LoadMapping<List<Tuple<RandomizableItem, RandomizableItem>>>(fileName);
-                return true;
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine($"Could not read RandomizableItem save file {fileName}: {exc}");
-                Console.WriteLine("Initiating new mapping...");
-                return false;
-            }
-
-        }
     }
 }

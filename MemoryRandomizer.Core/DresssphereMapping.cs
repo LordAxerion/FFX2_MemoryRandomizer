@@ -6,6 +6,8 @@ namespace MemoryRandomizer.Core
 {
     public class DresssphereMapping : IMapping<Dresssphere>
     {
+        private readonly byte[] initialByteArray;
+
         public List<Tuple<Dresssphere, Dresssphere>> MappingList { get; set; } = new List<Tuple<Dresssphere, Dresssphere>>();
 
         public List<Dresssphere> Dresspheres = new List<Dresssphere>()
@@ -42,7 +44,7 @@ namespace MemoryRandomizer.Core
             new Dresssphere(29, 0x4fd9, "Festivalist", true)
         };
 
-        public static List<Dresssphere> RandomizableDresspheres = new List<Dresssphere>()
+        public List<Dresssphere> RandomizableItems { get; set; } = new List<Dresssphere>()
         {
             new Dresssphere(1, 0x4fbd, "Gunner", true),
             new Dresssphere(2, 0x4fbe, "Gun Mage", true),
@@ -65,6 +67,12 @@ namespace MemoryRandomizer.Core
             new Dresssphere(29, 0x4fd9, "Festivalist", true)
         };
 
+
+        public DresssphereMapping(byte[] initialByteArray)
+        {
+            this.initialByteArray = initialByteArray;
+        }
+
         public void CreateMapping()
         {
             int i = 0;
@@ -72,8 +80,8 @@ namespace MemoryRandomizer.Core
             {
                 if (ds.Available)
                 {
-                    RandomizableDresspheres[i].Count = ds.Count;
-                    MappingList.Add(new Tuple<Dresssphere, Dresssphere>(ds, RandomizableDresspheres[i]));
+                    this.RandomizableItems[i].Count = ds.Count;
+                    MappingList.Add(new Tuple<Dresssphere, Dresssphere>(ds, this.RandomizableItems[i]));
                     i++;
                 }
                 else
@@ -82,12 +90,12 @@ namespace MemoryRandomizer.Core
                 }
             }
         }
-        public void Initiate(byte[] initialByteArray)
+        public void Initiate()
         {
             int i = 0;
-            foreach (byte b in initialByteArray)
+            foreach (byte b in this.initialByteArray)
             {
-                Dresspheres[i].Count = Convert.ToUInt32(initialByteArray[i]);
+                Dresspheres[i].Count = Convert.ToUInt32(this.initialByteArray[i]);
                 i++;
             }
         }

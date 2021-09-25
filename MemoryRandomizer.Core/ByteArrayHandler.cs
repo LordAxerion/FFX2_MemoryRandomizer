@@ -16,7 +16,7 @@ namespace MemoryRandomizer.Core
         }
 
 
-        internal static void CreateByteArrayDS(byte[] newByteArray)
+        internal static void CreateByteArrayDS(ref byte[] newByteArray)
         {
             foreach (Tuple<Dresssphere, Dresssphere> ds in dresssphereMapping.MappingList)
             {
@@ -25,7 +25,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CreateByteArrayBoth(byte[] newByteArrayDS, byte[] newByteArrayGG)
+        internal static void CreateByteArrayBoth(ref byte[] newByteArrayDS, ref byte[] newByteArrayGG)
         {
             foreach (Tuple<RandomizableItem, RandomizableItem> tuple in RandomizableItemMapping.MappingList)
             {
@@ -43,7 +43,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CreateByteArrayGG(byte[] newByteArray)
+        internal static void CreateByteArrayGG(ref byte[] newByteArray)
         {
             foreach (Tuple<GarmentGrid, GarmentGrid> gg in ggMapping.MappingList)
             {
@@ -62,7 +62,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CheckReadBytesDS(byte[] readByteArray)
+        internal static void CheckReadBytesDS(ref byte[] readByteArray)
         {
             foreach (var tuple in dresssphereMapping.MappingList)
             {
@@ -76,7 +76,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CheckReadBytesBoth(byte[] readByteArrayDS, byte[] readByteArrayGG)
+        internal static void CheckReadBytesBoth(ref byte[] readByteArrayDS, ref byte[] readByteArrayGG)
         {
             foreach (var tuple in RandomizableItemMapping.MappingList)
             {
@@ -109,7 +109,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CheckReadBytesGG(byte[] readByteArray)
+        internal static void CheckReadBytesGG(ref byte[] readByteArray)
         {
             foreach (var tuple in ggMapping.MappingList)
             {
