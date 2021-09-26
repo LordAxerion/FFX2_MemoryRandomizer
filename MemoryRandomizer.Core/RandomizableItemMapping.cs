@@ -4,9 +4,12 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class RandomizableItemMapping
+    public class RandomizableItemMapping : IMapping<RandomizableItem>
     {
-        public static List<Tuple<RandomizableItem, RandomizableItem>> MappingList = new List<Tuple<RandomizableItem, RandomizableItem>>();
+        private readonly byte[] initialByteArrayDS;
+        private readonly byte[] initialByteArrayGG;
+
+        public List<Tuple<RandomizableItem, RandomizableItem>> MappingList { get; set; } = new List<Tuple<RandomizableItem, RandomizableItem>>();
 
         public static List<RandomizableItem> Items = new List<RandomizableItem>()
         {
@@ -106,7 +109,7 @@ namespace MemoryRandomizer.Core
             new RandomizableItem("Psychic", 28, true, true), //92
             new RandomizableItem("Festivalist", 29, true, true) //93*/
         };
-        public static List<RandomizableItem> RandomizableItems = new List<RandomizableItem>()
+        public List<RandomizableItem> RandomizableItems { get; set; } = new List<RandomizableItem>()
         {
             /*new RandomizableItem("First Steps", 0, false, true),
             new RandomizableItem("Vanguard", 1, false, true),
@@ -194,7 +197,13 @@ namespace MemoryRandomizer.Core
             new RandomizableItem("Festivalist", 29, true, true) //82*/
         };
 
-        public static void CreateMapping()
+        public RandomizableItemMapping(byte[] initialByteArrayDS, byte[] initialByteArrayGG)
+        {
+            this.initialByteArrayDS = initialByteArrayDS;
+            this.initialByteArrayGG = initialByteArrayGG;
+        }
+
+        public void CreateMapping()
         {
             int i = 0;
             foreach (RandomizableItem item in Items)
@@ -203,22 +212,23 @@ namespace MemoryRandomizer.Core
                 {
                     RandomizableItems[i].GotIt = item.GotIt;
                     RandomizableItems[i].Count = item.Count;
-                    MappingList.Add(new Tuple<RandomizableItem, RandomizableItem>(item, RandomizableItems[i]));
+                    this.MappingList.Add(new Tuple<RandomizableItem, RandomizableItem>(item, RandomizableItems[i]));
                     i++;
                 }
                 else
                 {
-                    MappingList.Add(new Tuple<RandomizableItem, RandomizableItem>(item, item));
+                    this.MappingList.Add(new Tuple<RandomizableItem, RandomizableItem>(item, item));
                 }
             }
         }
-        public static void InitiateDressspheres(byte[] initialByteArrayDS, byte[] initialByteArrayGG)
+
+        public void Initiate()
         {
             foreach (RandomizableItem item in Items)
             {
                 if (item.ItemType == RandoItemType.Dresssphere)
                 {
-                    item.Count = initialByteArrayDS[item.Index];
+                    item.Count = this.initialByteArrayDS[item.Index];
                     if(item.Count != 0)
                     {
                         item.GotIt = true;
@@ -227,13 +237,18 @@ namespace MemoryRandomizer.Core
                 else
                 {
                     byte mask = (byte)(1 << item.BitIndex);
-                    item.GotIt = (initialByteArrayGG[item.ByteIndex] & mask) != 0;
+                    item.GotIt = (this.initialByteArrayGG[item.ByteIndex] & mask) != 0;
                     if (item.GotIt)
                     {
                         item.Count = 1;
                     }
                 }
             }
+        }
+
+        public void InitiateTotalChaos()
+        {
+            throw new NotImplementedException();
         }
     }
 }

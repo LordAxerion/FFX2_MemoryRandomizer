@@ -6,6 +6,8 @@ namespace MemoryRandomizer.Core
 {
     public class GarmentGridMapping : IMapping<GarmentGrid>
     {
+        private readonly byte[] initialByteArray;
+
         public List<Tuple<GarmentGrid, GarmentGrid>> MappingList { get; set; } = new List<Tuple<GarmentGrid, GarmentGrid>>();
 
         public List<GarmentGrid> GarmentGrids = new List<GarmentGrid>()
@@ -76,7 +78,7 @@ namespace MemoryRandomizer.Core
             new GarmentGrid(63, "Last Resort")
         };
 
-        public static List<GarmentGrid> RandomizedGarmentGrids = new List<GarmentGrid>()
+        public List<GarmentGrid> RandomizableItems { get; set; } = new List<GarmentGrid>()
         {
             new GarmentGrid(0,"First Steps"),
             new GarmentGrid(1, "Vanguard"),
@@ -144,26 +146,36 @@ namespace MemoryRandomizer.Core
             new GarmentGrid(63, "Last Resort")
         };
 
+        public GarmentGridMapping(byte[] initialByteArray)
+        {
+            this.initialByteArray = initialByteArray;
+        }
+
         public void CreateMapping()
         {
             int i = 0;
             foreach (GarmentGrid gg in GarmentGrids)
             {
 
-                RandomizedGarmentGrids[i].Available = gg.Available;
-                MappingList.Add(new Tuple<GarmentGrid, GarmentGrid>(gg, RandomizedGarmentGrids[i]));
+                this.RandomizableItems[i].Available = gg.Available;
+                MappingList.Add(new Tuple<GarmentGrid, GarmentGrid>(gg, this.RandomizableItems[i]));
                 i++;
             }
         }
-        public void Initiate(byte[] initialByteArray)
+        public void Initiate()
         {
             for (int i = 0; i < GarmentGrids.Count; i++)
             {
                 var byteIndex = i / 8;
                 var bitIndex = i % 8;
                 byte mask = (byte)(1 << bitIndex);
-                GarmentGrids[i].Available = (initialByteArray[byteIndex] & mask) != 0;
+                GarmentGrids[i].Available = (this.initialByteArray[byteIndex] & mask) != 0;
             }
+        }
+
+        public void InitiateTotalChaos()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -6,17 +6,19 @@ namespace MemoryRandomizer.Core
 {
     internal class ByteArrayHandler
     {
-        private static DresssphereMapping dresssphereMapping;
-        private static GarmentGridMapping ggMapping;
+        private DresssphereMapping dresssphereMapping;
+        private GarmentGridMapping ggMapping;
+        private RandomizableItemMapping riMapping;
 
-        internal ByteArrayHandler(DresssphereMapping dresssphereMapping, GarmentGridMapping garmentGridMapping)
+        internal ByteArrayHandler(DresssphereMapping dresssphereMapping, GarmentGridMapping garmentGridMapping, RandomizableItemMapping randomizableItemMapping)
         {
-            ByteArrayHandler.dresssphereMapping = dresssphereMapping;
-            ByteArrayHandler.ggMapping = garmentGridMapping;
+            this.dresssphereMapping = dresssphereMapping;
+            this.ggMapping = garmentGridMapping;
+            this.riMapping = randomizableItemMapping;
         }
 
 
-        internal static void CreateByteArrayDS(byte[] newByteArray)
+        internal void CreateByteArrayDS(ref byte[] newByteArray)
         {
             foreach (Tuple<Dresssphere, Dresssphere> ds in dresssphereMapping.MappingList)
             {
@@ -25,7 +27,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CreateByteArrayDSTC(byte[] newByteArray)
+        internal void CreateByteArrayDSTC(byte[] newByteArray)
         {
             foreach (var item in dresssphereMapping.RandomizableDresspheresTotalChaos)
             {
@@ -34,9 +36,9 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CreateByteArrayBoth(byte[] newByteArrayDS, byte[] newByteArrayGG)
+        internal void CreateByteArrayBoth(ref byte[] newByteArrayDS, ref byte[] newByteArrayGG)
         {
-            foreach (Tuple<RandomizableItem, RandomizableItem> tuple in RandomizableItemMapping.MappingList)
+            foreach (Tuple<RandomizableItem, RandomizableItem> tuple in riMapping.MappingList)
             {
                 if (tuple.Item2.ItemType == RandoItemType.Dresssphere)
                 {
@@ -52,7 +54,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CreateByteArrayGG(byte[] newByteArray)
+        internal void CreateByteArrayGG(ref byte[] newByteArray)
         {
             foreach (Tuple<GarmentGrid, GarmentGrid> gg in ggMapping.MappingList)
             {
@@ -71,9 +73,10 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal static void CheckReadBytesDS(byte[] readByteArray)
+        internal void CheckReadBytesDS(ref byte[] readByteArray)
         {
-            foreach (var tuple in dresssphereMapping.MappingList)
+            var tempList = Copy(dresssphereMapping.MappingList);
+            foreach (var tuple in tempList)
             {
                 uint newCount = readByteArray[tuple.Item2.Index];
                 if (tuple.Item2.Count != newCount)
@@ -84,9 +87,10 @@ namespace MemoryRandomizer.Core
                 }
             }
         }
-        internal static void CheckReadBytesDSTotalChaos(byte[] readByteArray)
+        internal void CheckReadBytesDSTotalChaos(byte[] readByteArray)
         {
-            foreach (var item in dresssphereMapping.RandomizableDresspheresTotalChaos)
+            var tempList = Copy(dresssphereMapping.RandomizableDresspheresTotalChaos);
+            foreach (var item in tempList)
             {
                 uint newCount = readByteArray[item.Index];
                 if (item.Count != newCount)
@@ -94,14 +98,13 @@ namespace MemoryRandomizer.Core
                     int diff = (int)(newCount - item.Count);
                     int newDs = Randomizer.GetInt(0, 18);
                     dresssphereMapping.RandomizableDresspheresTotalChaos[newDs].Count += diff;
-                    dresssphereMapping.RandomizableDresspheresTotalChaos[newDs].Count += diff;
                 }
             }
         }
 
-        internal static void CheckReadBytesBoth(byte[] readByteArrayDS, byte[] readByteArrayGG)
+        internal void CheckReadBytesBoth(ref byte[] readByteArrayDS, ref byte[] readByteArrayGG)
         {
-            foreach (var tuple in RandomizableItemMapping.MappingList)
+            foreach (var tuple in riMapping.MappingList)
             {
                 Console.WriteLine($"{tuple.Item1.Name}, {tuple.Item1.Count} -> {tuple.Item2.Name}, {tuple.Item2.Count}");
                 if (tuple.Item2.ItemType == RandoItemType.Dresssphere)
@@ -110,10 +113,10 @@ namespace MemoryRandomizer.Core
                     bool gotIt = newCount > 0;
                     if (tuple.Item2.GotIt != gotIt)
                     {
-                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item1.Count = newCount;
-                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item2.Count = newCount;
-                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item1.GotIt = gotIt;
-                        RandomizableItemMapping.MappingList[tuple.Item2.Index + 64].Item2.GotIt = gotIt;
+                        riMapping.MappingList[tuple.Item2.Index + 64].Item1.Count = newCount;
+                        riMapping.MappingList[tuple.Item2.Index + 64].Item2.Count = newCount;
+                        riMapping.MappingList[tuple.Item2.Index + 64].Item1.GotIt = gotIt;
+                        riMapping.MappingList[tuple.Item2.Index + 64].Item2.GotIt = gotIt;
                     }
                 }
                 else
@@ -122,17 +125,17 @@ namespace MemoryRandomizer.Core
                     bool isSet = (readByteArrayGG[tuple.Item2.ByteIndex] & mask) != 0;
                     if (tuple.Item2.GotIt != isSet)
                     {
-                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item1.GotIt = isSet;
-                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item2.GotIt = isSet;
-                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item1.Count = 1;
-                        RandomizableItemMapping.MappingList[tuple.Item2.Index].Item2.Count = 1;
+                        riMapping.MappingList[tuple.Item2.Index].Item1.GotIt = isSet;
+                        riMapping.MappingList[tuple.Item2.Index].Item2.GotIt = isSet;
+                        riMapping.MappingList[tuple.Item2.Index].Item1.Count = 1;
+                        riMapping.MappingList[tuple.Item2.Index].Item2.Count = 1;
                     }
                 }
                 Console.WriteLine($"{tuple.Item1.Name}, {tuple.Item1.Count} -> {tuple.Item2.Name}, {tuple.Item2.Count}");
             }
         }
 
-        internal static void CheckReadBytesGG(byte[] readByteArray)
+        internal void CheckReadBytesGG(ref byte[] readByteArray)
         {
             foreach (var tuple in ggMapping.MappingList)
             {
@@ -148,5 +151,25 @@ namespace MemoryRandomizer.Core
                 }
             }
         }
+        #region Helper
+        private List<RandomizableItem> Copy(List<RandomizableItem> listToCopy)
+        {
+            var newList = new List<RandomizableItem>();
+            foreach (var item in listToCopy)
+            {
+                newList.Add(new RandomizableItem(item));
+            }
+            return newList;
+        }
+        private List<Tuple<Dresssphere, Dresssphere>> Copy(List<Tuple<Dresssphere, Dresssphere>> listToCopy)
+        {
+            var newList = new List<Tuple<Dresssphere, Dresssphere>>();
+            foreach (var item in listToCopy)
+            {
+                newList.Add(new Tuple<Dresssphere, Dresssphere>(new Dresssphere(item.Item1), new Dresssphere(item.Item2)));
+            }
+            return newList;
+        }
+        #endregion Helper
     }
 }

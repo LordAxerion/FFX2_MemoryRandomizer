@@ -30,5 +30,18 @@ namespace MemoryRandomizer.Core
             Offset = offset;
             MaxCount = maxCount;
         }
+
+        public RandomizableItem(RandomizableItem item)
+        {
+            Name = item.Name;
+            Index = item.Index;
+            ByteIndex = item.ByteIndex;
+            BitIndex = item.BitIndex;
+            GotIt = item.GotIt;
+            Count = item.Count;
+            Available = item.Available;
+            Offset = item.Offset;
+            MaxCount = item.MaxCount;
+        }
     }
 }

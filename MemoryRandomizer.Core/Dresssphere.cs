@@ -22,5 +22,14 @@ namespace MemoryRandomizer.Core
             Available = available;
             Count = count;
         }
+
+        public Dresssphere(Dresssphere ds)
+        {
+            Index = ds.Index;
+            Address = ds.Address;
+            Name = ds.Name;
+            Available = ds.Available;
+            Count = ds.Count;
+        }
     }
 }
