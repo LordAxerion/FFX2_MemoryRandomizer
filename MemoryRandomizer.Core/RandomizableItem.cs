@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -18,6 +19,7 @@ namespace MemoryRandomizer.Core
 
         public RandoItemType ItemType{ get; set;}
 
+        [JsonConstructor]
         public RandomizableItem(string name, int index, bool available, RandoItemType itemType, int offset = 0x0, int maxCount = 999, bool gotIt = false, int count = 0)
         {
             Name = name;

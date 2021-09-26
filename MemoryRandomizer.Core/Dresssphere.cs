@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,6 +15,7 @@ namespace MemoryRandomizer.Core
         public bool Available { get; set; }
         public uint Count { get; set; }
 
+        [JsonConstructor]
         public Dresssphere(uint index, ushort address, string name, bool available, uint count = 0)
         {
             Index = index;
