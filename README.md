@@ -16,6 +16,13 @@ If you randomize both, you might want to remove the DS from FirstStep once you g
 
 **Please note that the Garment Grid randomizing currently doesn't work as intended, you will get more GGs than you should have**
 
+## Known Bugs
+If you open up the Tutorial from Shinra (for example to get Vanguard) you will have your Dresspheres scrambled. As of now I didn't come up with a good idea to fix this.
+You can either get Vanguard, then start the Mod and let your Dressspheres be randomized. (Since it is only possible after the Intro anyway)
+Or you just remember to stop the randomizer whenever you open the Tutorial and start it again once you left the menu.
+If you don't mind that you'll have a few more DS (of the same type) than you should have, you can choose to ignore this bug.
+Sorry for the inconvinience. 
+
 ## FAQ
 **Will there be a GUI at some point?**
 - Actually yes, since we already have a collaborator willing to do that :D
