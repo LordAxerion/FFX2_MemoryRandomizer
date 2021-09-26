@@ -82,8 +82,11 @@ namespace MemoryRandomizer.Core
                 if (tuple.Item2.Count != newCount)
                 {
                     int diff = (int)(newCount - tuple.Item2.Count);
-                    dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count += (uint)diff;
-                    dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count += (uint)diff;
+                    if (diff > 0)
+                    {
+                        dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count += (uint)diff;
+                        dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count += (uint)diff;
+                    }
                 }
             }
         }
@@ -97,7 +100,8 @@ namespace MemoryRandomizer.Core
                 {
                     int diff = (int)(newCount - item.Count);
                     int newDs = Randomizer.GetInt(0, 18);
-                    dresssphereMapping.RandomizableDresspheresTotalChaos[newDs].Count += diff;
+                    if (diff > 0)
+                        dresssphereMapping.RandomizableDresspheresTotalChaos[newDs].Count += diff;
                 }
             }
         }
