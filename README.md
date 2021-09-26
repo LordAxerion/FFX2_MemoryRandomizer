@@ -21,6 +21,7 @@ If you open up the Tutorial from Shinra (for example to get Vanguard) you will h
 - You can either get Vanguard, then start the Mod and let your Dressspheres be randomized. (Since it is only possible after the Intro anyway)  
 - Or you just remember to stop the randomizer whenever you open the Tutorial and start it again once you left the menu.  
 - If you don't mind that you'll have a few more DS (of the same type) than you should have, you can choose to ignore this bug.  
+
 Sorry for the inconvinience. 
 
 ## FAQ
