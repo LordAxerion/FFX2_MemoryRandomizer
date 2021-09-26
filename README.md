@@ -10,8 +10,8 @@ A FFX-2 randomizer that randomizes gotten dressspheres and garmentgrids in memor
 - At the start of the program it will attempt to read that file. If you want to start anew move it somewhere else, rename or delete it. 
 - That's it, have fun :)
 
-One more note: The randomizer cannot randomize the intro (at least not yet). You have to finish the intro and once you are on the airship, open the menu and remove all dressspheres from the First Steps garment grid. This will remove the Dressspheres from your list and instead you will have the randomized ones.  
-If you randomize the GarmentGrids you will have to remove the FirstStep GG from the girls equipment and replace it with your new one.  
+One more note: The randomizer cannot randomize the intro (at least not yet). You have to finish the intro and once you are on the airship, open the menu and remove all dressspheres from the First Steps garment grid. This will remove the Dressspheres from your list and instead you will have the randomized ones.   
+If you randomize the GarmentGrids you will have to remove the FirstStep GG from the girls equipment and replace it with your new one.   
 If you randomize both, you might want to remove the DS from FirstStep once you got it, since the old one (Thief, Warrior, Songstress, Gunner) will still be on it, even if you don't have them.
 
 **Please note that the Garment Grid randomizing currently doesn't work as intended, you will get more GGs than you should have**
