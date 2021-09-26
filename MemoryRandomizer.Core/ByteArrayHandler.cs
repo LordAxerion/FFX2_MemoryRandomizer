@@ -25,6 +25,15 @@ namespace MemoryRandomizer.Core
             }
         }
 
+        internal static void CreateByteArrayDSTC(byte[] newByteArray)
+        {
+            foreach (var item in dresssphereMapping.RandomizableDresspheresTotalChaos)
+            {
+                newByteArray[item.Index] = Convert.ToByte(item.Count);
+                // Console.WriteLine($"{ds.Item1.Name}, {ds.Item1.Count} -> {ds.Item2.Name}, {ds.Item2.Count}");
+            }
+        }
+
         internal static void CreateByteArrayBoth(byte[] newByteArrayDS, byte[] newByteArrayGG)
         {
             foreach (Tuple<RandomizableItem, RandomizableItem> tuple in RandomizableItemMapping.MappingList)
@@ -72,6 +81,20 @@ namespace MemoryRandomizer.Core
                     int diff = (int)(newCount - tuple.Item2.Count);
                     dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item1.Count += (uint)diff;
                     dresssphereMapping.MappingList[(int)tuple.Item2.Index].Item2.Count += (uint)diff;
+                }
+            }
+        }
+        internal static void CheckReadBytesDSTotalChaos(byte[] readByteArray)
+        {
+            foreach (var item in dresssphereMapping.RandomizableDresspheresTotalChaos)
+            {
+                uint newCount = readByteArray[item.Index];
+                if (item.Count != newCount)
+                {
+                    int diff = (int)(newCount - item.Count);
+                    int newDs = Randomizer.GetInt(0, 18);
+                    dresssphereMapping.RandomizableDresspheresTotalChaos[newDs].Count += diff;
+                    dresssphereMapping.RandomizableDresspheresTotalChaos[newDs].Count += diff;
                 }
             }
         }

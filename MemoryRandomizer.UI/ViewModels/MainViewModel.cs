@@ -64,7 +64,7 @@ namespace MemoryRandomizer.UI
         #region Command Implementations
         public async Task Attach(object _)
         {
-            await Task.Run(() => this.gameManager.Startup(this.DresssphereViewModel.Randomize, this.GarmentGridViewModel.Randomize));
+            await Task.Run(() => this.gameManager.Startup(this.DresssphereViewModel.Randomize, this.GarmentGridViewModel.Randomize, false));
         }
 
         public async Task DeleteSave(object _)
