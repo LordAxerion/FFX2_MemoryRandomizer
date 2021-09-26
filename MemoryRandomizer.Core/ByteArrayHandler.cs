@@ -27,7 +27,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal void CreateByteArrayDSTC(byte[] newByteArray)
+        internal void CreateByteArrayDSTC(ref byte[] newByteArray)
         {
             foreach (var item in dresssphereMapping.RandomizableDresspheresTotalChaos)
             {
