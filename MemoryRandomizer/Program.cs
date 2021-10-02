@@ -11,6 +11,7 @@ namespace MemoryRandomizer
     class Program
     {
         private static bool randomizeDS = false;
+        private static bool randomizeDSTotalChaos = false;
         private static bool randomizeGG = false;
         private static bool randomizeBoth = false;
 
@@ -30,6 +31,12 @@ namespace MemoryRandomizer
                 {
                     randomizeDS = true;
                 }
+                Console.WriteLine("Randomize Dresspheres total chaos? y/n");
+                keyIn = Console.ReadKey();
+                if (keyIn.Key == ConsoleKey.Y)
+                {
+                    randomizeDSTotalChaos = true;
+                }
                 Console.WriteLine("Randomize GarmentGrids? y/n");
                 keyIn = Console.ReadKey();
                 if (keyIn.Key == ConsoleKey.Y)
@@ -38,7 +45,7 @@ namespace MemoryRandomizer
                 }
             }
 
-            new GameManager().Startup(randomizeDS, randomizeGG, randomizeBoth);
+            new GameManager().Startup(randomizeDS, randomizeGG, randomizeBoth, randomizeDSTotalChaos);
         }
     }
 }

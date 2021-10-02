@@ -172,5 +172,10 @@ namespace MemoryRandomizer.Core
                 GarmentGrids[i].Available = (this.initialByteArray[byteIndex] & mask) != 0;
             }
         }
+
+        public void InitiateTotalChaos()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

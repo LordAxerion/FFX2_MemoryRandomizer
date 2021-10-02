@@ -11,5 +11,6 @@ namespace MemoryRandomizer.Core
 
         void Initiate();
         void CreateMapping();
+        void InitiateTotalChaos();
     }
 }

@@ -245,5 +245,10 @@ namespace MemoryRandomizer.Core
                 }
             }
         }
+
+        public void InitiateTotalChaos()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

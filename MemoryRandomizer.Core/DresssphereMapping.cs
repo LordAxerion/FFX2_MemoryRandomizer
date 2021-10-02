@@ -73,6 +73,29 @@ namespace MemoryRandomizer.Core
             this.initialByteArray = initialByteArray;
         }
 
+        public List<RandomizableItem> RandomizableDresspheresTotalChaos { get; set; } = new List<RandomizableItem>()
+        {
+            new RandomizableItem("Gunner", 1, true, RandoItemType.Dresssphere, 0x4fbd),
+            new RandomizableItem("Gun Mage", 2, true, RandoItemType.Dresssphere, 0x4fbe), 
+            new RandomizableItem("Alchemist", 3, true, RandoItemType.Dresssphere, 0x4fbf),
+            new RandomizableItem("Warrior", 4, true, RandoItemType.Dresssphere, 0x4fc0),
+            new RandomizableItem("Samurai", 5, true, RandoItemType.Dresssphere, 0x4fc1),
+            new RandomizableItem("Dark Knight", 6, true, RandoItemType.Dresssphere, 0x4fc2),
+            new RandomizableItem("Berserker", 7, true, RandoItemType.Dresssphere, 0x4fc3),
+            new RandomizableItem("Songstress", 8, true, RandoItemType.Dresssphere, 0x4fc4),
+            new RandomizableItem("Black Mage", 9, true, RandoItemType.Dresssphere, 0x4fc5),
+            new RandomizableItem("White Mage", 10, true, RandoItemType.Dresssphere, 0x4fc6),
+            new RandomizableItem("Thief", 11, true, RandoItemType.Dresssphere, 0x4fc7),
+            new RandomizableItem("Trainer", 12, true, RandoItemType.Dresssphere, 0x4fc8),
+            new RandomizableItem("Lady Luck", 13, true, RandoItemType.Dresssphere, 0x4fc9),
+            new RandomizableItem("Mascot", 14, true, RandoItemType.Dresssphere, 0x4fca),
+            new RandomizableItem("Floral Fallal", 15, true, RandoItemType.Dresssphere, 0x4fcb),
+            new RandomizableItem("Machina Maw", 18, true, RandoItemType.Dresssphere, 0x4fce),
+            new RandomizableItem("Full Throttle", 21, true, RandoItemType.Dresssphere, 0x4fd1),
+            new RandomizableItem("Psychic", 28, true, RandoItemType.Dresssphere, 0x4fd8),
+            new RandomizableItem("Festivalist", 29, true, RandoItemType.Dresssphere, 0x4fd9)
+        };
+
         public void CreateMapping()
         {
             int i = 0;
@@ -97,6 +120,14 @@ namespace MemoryRandomizer.Core
             {
                 Dresspheres[i].Count = Convert.ToUInt32(this.initialByteArray[i]);
                 i++;
+            }
+        }
+        // this v can be merged with this ^ when we change all Items to RandomizableItem instead of Dressphere/GarmentGrid
+        public void InitiateTotalChaos()
+        {
+            foreach (var item in RandomizableDresspheresTotalChaos)
+            {
+                item.Count = initialByteArray[item.Index];
             }
         }
     }

@@ -20,5 +20,10 @@ namespace MemoryRandomizer.Core
                 list[n] = value;
             }
         }
+
+        public static int GetInt(int min, int max)
+        {
+            return rng.Next(min, max);
+        }
     }
 }
