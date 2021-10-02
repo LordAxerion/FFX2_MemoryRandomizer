@@ -46,14 +46,17 @@ namespace MemoryRandomizer.Core
             // Read save files
             if (randomizeBoth && loadBoth)
             {
+                rim = new RandomizableItemMapping(null, null);
                 initialReadDoneBoth = SaveManager.ReadSaveFile(rim, SaveManager.GGSaveFileName);
             }
             if (randomizeDS && loadDS)
             {
+                dm = new DresssphereMapping(null);
                 initialReadDoneDS = SaveManager.ReadSaveFile(dm, SaveManager.DresssphereSaveFileName);
             }
             if (randomizeGG && loadGG)
             {
+                ggm = new GarmentGridMapping(null);
                 initialReadDoneGG = SaveManager.ReadSaveFile(ggm, SaveManager.GGSaveFileName);
             }
 
