@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFX2MemoryReader;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace MemoryRandomizer.Core
     {
         private readonly byte[] initialByteArrayDS;
         private readonly byte[] initialByteArrayGG;
+        private readonly Serializer mSerializer = new Serializer();
 
         public List<Tuple<RandomizableItem, RandomizableItem>> MappingList { get; set; } = new List<Tuple<RandomizableItem, RandomizableItem>>();
 
@@ -249,6 +251,22 @@ namespace MemoryRandomizer.Core
         public void InitiateTotalChaos()
         {
             throw new NotImplementedException();
+        }
+
+        public void Randomize(ProcessMemoryReader mReader, ByteArrayHandler byteArrayHandler, byte[] memoryBytesDS, byte[] memoryBytesGG)
+        {
+            // check byteArray for changes -> apply changes to mapping 
+            byteArrayHandler.CheckReadBytesBoth(ref memoryBytesDS, ref memoryBytesGG);
+            // Write mapping data to memory
+            byte[] newByteArrayDS = new byte[0x1E];
+            byte[] newByteArrayGG = new byte[0x8];
+            byteArrayHandler.CreateByteArrayBoth(ref newByteArrayDS, ref newByteArrayGG);
+
+            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + IMapping<RandomizableItemMapping>.startofDresssphereSaves), newByteArrayDS, out _);
+            int error2 = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + IMapping<RandomizableItemMapping>.startOfGGSaves), newByteArrayGG, out _);
+            mReader.CheckError(error, error2);
+
+            mSerializer.SaveMapping(SaveManager.BothSaveFileName, this.MappingList);
         }
     }
 }

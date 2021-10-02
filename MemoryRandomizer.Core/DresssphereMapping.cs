@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFX2MemoryReader;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,6 +8,7 @@ namespace MemoryRandomizer.Core
     public class DresssphereMapping : IMapping<Dresssphere>
     {
         private readonly byte[] initialByteArray;
+        private readonly Serializer mSerializer = new Serializer();
 
         public List<Tuple<Dresssphere, Dresssphere>> MappingList { get; set; } = new List<Tuple<Dresssphere, Dresssphere>>();
 
@@ -129,6 +131,20 @@ namespace MemoryRandomizer.Core
             {
                 item.Count = initialByteArray[item.Index];
             }
+        }
+
+        public void Randomize(ProcessMemoryReader mReader, ByteArrayHandler byteArrayHandler, byte[] memoryBytesDS, byte[] memoryBytesGG = null)
+        {
+            // check byteArray for changes -> apply changes to mapping 
+            byteArrayHandler.CheckReadBytesDS(ref memoryBytesDS);
+            // Write mapping data to memory
+            byte[] newByteArrayDS = new byte[0x1E];
+            byteArrayHandler.CreateByteArrayDS(ref newByteArrayDS);
+
+            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + IMapping<Dresssphere>.startofDresssphereSaves), newByteArrayDS, out _);
+            mReader.CheckError(error);
+
+            mSerializer.SaveMapping(SaveManager.DresssphereSaveFileName, this.MappingList);
         }
     }
 }

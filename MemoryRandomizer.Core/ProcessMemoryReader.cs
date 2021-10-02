@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -127,6 +128,17 @@ namespace FFX2MemoryReader
                 bytesWritten = 0;
             }
             return Marshal.GetLastWin32Error();
+        }
+
+        internal void CheckError(params int[] errors)
+        {
+            foreach (int error in errors)
+            {
+                if (error != 0)
+                {
+                    throw new IOException($"Write Memory returned with error code {error}");
+                }
+            }
         }
     }
 }

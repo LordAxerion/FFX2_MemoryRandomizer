@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFX2MemoryReader;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,6 +8,7 @@ namespace MemoryRandomizer.Core
     public class GarmentGridMapping : IMapping<GarmentGrid>
     {
         private readonly byte[] initialByteArray;
+        private readonly Serializer mSerializer = new Serializer();
 
         public List<Tuple<GarmentGrid, GarmentGrid>> MappingList { get; set; } = new List<Tuple<GarmentGrid, GarmentGrid>>();
 
@@ -176,6 +178,18 @@ namespace MemoryRandomizer.Core
         public void InitiateTotalChaos()
         {
             throw new NotImplementedException();
+        }
+
+        public void Randomize(ProcessMemoryReader mReader, ByteArrayHandler byteArrayHandler, byte[] memoryBytesGG, byte[] memoryBytesDS = null)
+        {
+            byteArrayHandler.CheckReadBytesGG(ref memoryBytesGG);
+            byte[] newByteArrayGG = new byte[0x8];
+            byteArrayHandler.CreateByteArrayGG(ref newByteArrayGG);
+
+            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + IMapping<GarmentGrid>.startOfGGSaves), newByteArrayGG, out _);
+            mReader.CheckError(error);
+
+            mSerializer.SaveMapping(SaveManager.GGSaveFileName, this.MappingList);
         }
     }
 }

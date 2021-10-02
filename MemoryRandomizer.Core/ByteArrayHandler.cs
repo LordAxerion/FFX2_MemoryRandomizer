@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    internal class ByteArrayHandler
+    public class ByteArrayHandler
     {
         private DresssphereMapping dresssphereMapping;
         private GarmentGridMapping ggMapping;
