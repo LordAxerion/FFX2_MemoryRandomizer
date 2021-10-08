@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    internal class GarmentGridByteArrayHandler
+    internal class GarmentGridByteArrayHandler : IByteArrayHandler<GarmentGrid>
     {
         private GarmentGridMapping mapping;
 
@@ -14,8 +14,11 @@ namespace MemoryRandomizer.Core
         }
 
 
-        internal void CreateByteArray(ref byte[] newByteArray)
+        public void CreateByteArray(out byte[] _, out byte[] newByteArrayGG)
         {
+            _ = null;
+            newByteArrayGG = new byte[0x8];
+
             foreach (Tuple<GarmentGrid, GarmentGrid> gg in mapping.MappingList)
             {
                 if (gg.Item2.Available)
@@ -24,16 +27,16 @@ namespace MemoryRandomizer.Core
                     var byteIndex = index / 8;
                     var bitIndex = index % 8;
 
-                    var currentByte = newByteArray[byteIndex];
+                    var currentByte = newByteArrayGG[byteIndex];
 
                     var mask = 1 << (int)bitIndex;
-                    newByteArray[byteIndex] = (byte)(currentByte ^ (byte)mask);
+                    newByteArrayGG[byteIndex] = (byte)(currentByte ^ (byte)mask);
                     // Console.WriteLine($"{ds.Item1.Name}, {ds.Item1.Count} -> {ds.Item2.Name}, {ds.Item2.Count}");
                 }
             }
         }
 
-        internal void CheckReadBytes(ref byte[] readByteArray)
+        public void CheckReadBytes(ref byte[] _, ref byte[] readByteArrayGG)
         {
             foreach (var tuple in mapping.MappingList)
             {
@@ -41,7 +44,7 @@ namespace MemoryRandomizer.Core
                 var bitIndex = tuple.Item2.Index % 8;
 
                 byte mask = (byte)(1 << (int)bitIndex);
-                bool isSet = (readByteArray[byteIndex] & mask) != 0;
+                bool isSet = (readByteArrayGG[byteIndex] & mask) != 0;
                 if (tuple.Item2.Available != isSet)
                 {
                     mapping.MappingList[(int)tuple.Item2.Index].Item1.Available = isSet;

@@ -5,12 +5,11 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class DresssphereMapping : IMapping<Dresssphere>
+    internal class DresssphereMapping : AbstractMapping<Dresssphere>
     {
         private readonly byte[] initialByteArray;
-        private readonly Serializer mSerializer = new Serializer();
 
-        public List<Tuple<Dresssphere, Dresssphere>> MappingList { get; set; } = new List<Tuple<Dresssphere, Dresssphere>>();
+        internal override List<Tuple<Dresssphere, Dresssphere>> MappingList { get; set; } = new List<Tuple<Dresssphere, Dresssphere>>();
 
         public List<Dresssphere> Dresspheres = new List<Dresssphere>()
         {
@@ -46,7 +45,7 @@ namespace MemoryRandomizer.Core
             new Dresssphere(29, 0x4fd9, "Festivalist", true)
         };
 
-        public List<Dresssphere> RandomizableItems { get; set; } = new List<Dresssphere>()
+        internal override List<Dresssphere> RandomizableItems { get; set; } = new List<Dresssphere>()
         {
             new Dresssphere(1, 0x4fbd, "Gunner", true),
             new Dresssphere(2, 0x4fbe, "Gun Mage", true),
@@ -70,9 +69,10 @@ namespace MemoryRandomizer.Core
         };
 
 
-        public DresssphereMapping(byte[] initialByteArray)
+        public DresssphereMapping(ProcessMemoryReader mReader, byte[] initialByteArray) : base(mReader)
         {
             this.initialByteArray = initialByteArray;
+            this.byteArrayHandler = new DresssphereByteArrayHandler(this);
         }
 
         public List<RandomizableItem> RandomizableDresspheresTotalChaos { get; set; } = new List<RandomizableItem>()
@@ -98,7 +98,7 @@ namespace MemoryRandomizer.Core
             new RandomizableItem("Festivalist", 29, true, RandoItemType.Dresssphere, 0x4fd9)
         };
 
-        public void CreateMapping()
+        internal override void CreateMapping()
         {
             int i = 0;
             foreach (Dresssphere ds in Dresspheres)
@@ -115,7 +115,7 @@ namespace MemoryRandomizer.Core
                 }
             }
         }
-        public void Initiate()
+        internal override void Initiate()
         {
             int i = 0;
             foreach (byte b in this.initialByteArray)
@@ -125,7 +125,7 @@ namespace MemoryRandomizer.Core
             }
         }
         // this v can be merged with this ^ when we change all Items to RandomizableItem instead of Dressphere/GarmentGrid
-        public void InitiateTotalChaos()
+        internal override void InitiateTotalChaos()
         {
             foreach (var item in RandomizableDresspheresTotalChaos)
             {
@@ -133,18 +133,15 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        public void Randomize(ProcessMemoryReader mReader, ByteArrayHandler byteArrayHandler, byte[] memoryBytesDS, byte[] memoryBytesGG = null)
+        protected override void Save()
         {
-            // check byteArray for changes -> apply changes to mapping 
-            byteArrayHandler.CheckReadBytesDS(ref memoryBytesDS);
-            // Write mapping data to memory
-            byte[] newByteArrayDS = new byte[0x1E];
-            byteArrayHandler.CreateByteArrayDS(ref newByteArrayDS);
-
-            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + IMapping<Dresssphere>.startofDresssphereSaves), newByteArrayDS, out _);
-            mReader.CheckError(error);
-
             mSerializer.SaveMapping(SaveManager.DresssphereSaveFileName, this.MappingList);
+        }
+
+        protected override void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
+        {
+            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + startofDresssphereSaves), memoryBytesDS, out _);
+            mReader.CheckError(error);
         }
     }
 }

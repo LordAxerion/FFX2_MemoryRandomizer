@@ -5,12 +5,11 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class GarmentGridMapping : IMapping<GarmentGrid>
+    internal class GarmentGridMapping : AbstractMapping<GarmentGrid>
     {
         private readonly byte[] initialByteArray;
-        private readonly Serializer mSerializer = new Serializer();
 
-        public List<Tuple<GarmentGrid, GarmentGrid>> MappingList { get; set; } = new List<Tuple<GarmentGrid, GarmentGrid>>();
+        internal override List<Tuple<GarmentGrid, GarmentGrid>> MappingList { get; set; } = new List<Tuple<GarmentGrid, GarmentGrid>>();
 
         public List<GarmentGrid> GarmentGrids = new List<GarmentGrid>()
         {
@@ -80,7 +79,7 @@ namespace MemoryRandomizer.Core
             new GarmentGrid(63, "Last Resort")
         };
 
-        public List<GarmentGrid> RandomizableItems { get; set; } = new List<GarmentGrid>()
+        internal override List<GarmentGrid> RandomizableItems { get; set; } = new List<GarmentGrid>()
         {
             new GarmentGrid(0,"First Steps"),
             new GarmentGrid(1, "Vanguard"),
@@ -148,12 +147,13 @@ namespace MemoryRandomizer.Core
             new GarmentGrid(63, "Last Resort")
         };
 
-        public GarmentGridMapping(byte[] initialByteArray)
+        public GarmentGridMapping(ProcessMemoryReader mReader, byte[] initialByteArray) : base(mReader)
         {
             this.initialByteArray = initialByteArray;
+            this.byteArrayHandler = new GarmentGridByteArrayHandler(this);
         }
 
-        public void CreateMapping()
+        internal override void CreateMapping()
         {
             int i = 0;
             foreach (GarmentGrid gg in GarmentGrids)
@@ -164,7 +164,7 @@ namespace MemoryRandomizer.Core
                 i++;
             }
         }
-        public void Initiate()
+        internal override void Initiate()
         {
             for (int i = 0; i < GarmentGrids.Count; i++)
             {
@@ -175,21 +175,21 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        public void InitiateTotalChaos()
+        internal override void InitiateTotalChaos()
         {
             throw new NotImplementedException();
         }
 
-        public void Randomize(ProcessMemoryReader mReader, ByteArrayHandler byteArrayHandler, byte[] memoryBytesGG, byte[] memoryBytesDS = null)
+
+        protected override void Save()
         {
-            byteArrayHandler.CheckReadBytesGG(ref memoryBytesGG);
-            byte[] newByteArrayGG = new byte[0x8];
-            byteArrayHandler.CreateByteArrayGG(ref newByteArrayGG);
-
-            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + IMapping<GarmentGrid>.startOfGGSaves), newByteArrayGG, out _);
-            mReader.CheckError(error);
-
             mSerializer.SaveMapping(SaveManager.GGSaveFileName, this.MappingList);
+        }
+
+        protected override void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
+        {
+            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + startOfGGSaves), memoryBytesGG, out _);
+            mReader.CheckError(error);
         }
     }
 }

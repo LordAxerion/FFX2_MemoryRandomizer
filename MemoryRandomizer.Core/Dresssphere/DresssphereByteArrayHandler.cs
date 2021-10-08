@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    internal class DresssphereByteArrayHandler
+    internal class DresssphereByteArrayHandler : IByteArrayHandler<Dresssphere>
     {
         private DresssphereMapping mapping;
 
@@ -14,8 +14,11 @@ namespace MemoryRandomizer.Core
         }
 
 
-        internal void CreateByteArray(ref byte[] newByteArray)
+        public void CreateByteArray(out byte[] newByteArray, out byte[] _)
         {
+            newByteArray = new byte[0x1E];
+            _ = null;
+
             foreach (Tuple<Dresssphere, Dresssphere> ds in mapping.MappingList)
             {
                 newByteArray[ds.Item2.Index] = Convert.ToByte(ds.Item2.Count);
@@ -23,7 +26,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal void CreateByteArrayTotalChaos(ref byte[] newByteArray)
+        public void CreateByteArrayTotalChaos(ref byte[] newByteArray)
         {
             foreach (var item in mapping.RandomizableDresspheresTotalChaos)
             {
@@ -32,7 +35,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        internal void CheckReadBytes(ref byte[] readByteArray)
+        public void CheckReadBytes(ref byte[] readByteArray, ref byte[] _)
         {
             var tempList = Copy(mapping.MappingList);
             foreach (var tuple in tempList)
@@ -49,7 +52,7 @@ namespace MemoryRandomizer.Core
                 }
             }
         }
-        internal void CheckReadBytesTotalChaos(byte[] readByteArray)
+        public void CheckReadBytesTotalChaos(byte[] readByteArray)
         {
             var tempList = Copy(mapping.RandomizableDresspheresTotalChaos);
             foreach (var item in tempList)
