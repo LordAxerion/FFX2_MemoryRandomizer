@@ -105,13 +105,10 @@ namespace MemoryRandomizer.Core
             // check byteArray for changes -> apply changes to mapping 
             ((DSByteArrayHandler) this.ByteArrayHandler).CheckReadBytesTotalChaos(memoryBytesDS);
             // Write mapping data to memory
-            ((DSByteArrayHandler)this.ByteArrayHandler).CreateByteArrayTotalChaos(out byte[] newByteArrayDS);
-            this.WriteMemory(newByteArrayDS, null);
-            // Write mapping data to save file
-            this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);
+            this.WriteTotalChaos();
         }
 
-        internal void InitialWriteTotalChaos()
+        internal void WriteTotalChaos()
         {
             // Write mapping data to memory
             ((DSByteArrayHandler)this.ByteArrayHandler).CreateByteArrayTotalChaos(out byte[] newByteArrayDS);
@@ -157,7 +154,7 @@ namespace MemoryRandomizer.Core
 
         protected override int WriteMemory(byte[] memoryBytesDS, byte[] _)
         {
-            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + startofDresssphereSaves), memoryBytesDS, out int bytesIn);
+            int error = mReader.WriteMemory((IntPtr)((uint)this.BaseAddress + startofDresssphereSaves), memoryBytesDS, out int bytesIn);
             this.CheckError(error);
             return bytesIn;
         }

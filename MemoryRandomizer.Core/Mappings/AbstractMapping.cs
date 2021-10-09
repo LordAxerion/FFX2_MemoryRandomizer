@@ -14,10 +14,11 @@ namespace MemoryRandomizer.Core
         protected readonly ProcessMemoryReader mReader;
         protected readonly Serializer mSerializer;
 
-        internal abstract string SaveFile { get; }
         internal List<Tuple<T, T>> MappingList { get; set; }
+        internal abstract string SaveFile { get; }
         internal abstract List<T> RandomizableItems { get; set; }
         private protected IByteArrayHandler<T> ByteArrayHandler { get; set; }
+        private protected IntPtr BaseAddress => this.mReader.ReadProcess.Modules[0].BaseAddress;
 
         protected AbstractMapping(ProcessMemoryReader mReader)
         {
@@ -32,18 +33,15 @@ namespace MemoryRandomizer.Core
 
         protected abstract int WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG);
 
-        internal void Randomize(ref byte[] memoryBytesDS, ref byte[] memoryBytesGG)
+        internal void ReadAndWrite(ref byte[] memoryBytesDS, ref byte[] memoryBytesGG)
         {
             // check byteArray for changes -> apply changes to mapping 
             this.ByteArrayHandler.CheckReadBytes(ref memoryBytesDS, ref memoryBytesGG);
             // Write mapping data to memory
-            this.ByteArrayHandler.CreateByteArray(out byte[] newByteArrayDS, out byte[] newByteArrayGG);
-            this.WriteMemory(newByteArrayDS, newByteArrayGG);
-            // Write mapping data to save file
-            this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);
+            this.Write();
         }
 
-        internal void InitialWrite()
+        internal void Write()
         {
             // Write mapping data to memory
             this.ByteArrayHandler.CreateByteArray(out byte[] newByteArrayDS, out byte[] newByteArrayGG);

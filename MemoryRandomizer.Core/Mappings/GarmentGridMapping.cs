@@ -184,7 +184,7 @@ namespace MemoryRandomizer.Core
 
         protected override int WriteMemory(byte[] _, byte[] memoryBytesGG)
         {
-            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + startOfGGSaves), memoryBytesGG, out int bytesIn);
+            int error = mReader.WriteMemory((IntPtr)((uint)this.BaseAddress + startOfGGSaves), memoryBytesGG, out int bytesIn);
             this.CheckError(error);
             return bytesIn;
         }

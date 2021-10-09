@@ -29,7 +29,6 @@ namespace MemoryRandomizer.Core
         private static DresssphereMapping dm;
         private static GarmentGridMapping ggm;
         private static RandomizableItemMapping rim;
-        private static ByteArrayHandler byteArrayHandler;
 
         /// <summary>
         ///     Starts the randomization process.
@@ -61,14 +60,13 @@ namespace MemoryRandomizer.Core
 
             // Initial read
             DoInitialReadsAndShuffle(randomizeBoth, randomizeDSTC);
-            byteArrayHandler = new ByteArrayHandler(dm, ggm, rim);
             // We need to write after the Initial read and shuffle, or the Mapping will not fit the  current state
             DoInitialWrite(randomizeBoth, randomizeDSTC, randomizeDS, randomizeGG);
 
             // Start monitoring
             try
             {
-                Monitor(randomizeDS, randomizeGG, randomizeBoth, randomizeDSTC);
+                this.Monitor(randomizeDS, randomizeGG, randomizeBoth, randomizeDSTC);
             }
             catch (Exception exc)
             {
@@ -94,7 +92,7 @@ namespace MemoryRandomizer.Core
                 {
                     if (randomizeBoth)
                     {
-                        rim.Randomize(ref memoryBytesDs, ref memoryBytesGG);
+                        rim.ReadAndWrite(ref memoryBytesDs, ref memoryBytesGG);
                     }                    
                     else if (randomizeDSTotalChaos)
                     {
@@ -102,12 +100,12 @@ namespace MemoryRandomizer.Core
                     }
                     else if (randomizeDS)
                     {
-                        dm.Randomize(ref memoryBytesDs, ref memoryBytesGG);
+                        dm.ReadAndWrite(ref memoryBytesDs, ref memoryBytesGG);
                     }
 
                     if (randomizeGG && !randomizeBoth)
                     {
-                        ggm.Randomize(ref memoryBytesDs, ref memoryBytesGG);
+                        ggm.ReadAndWrite(ref memoryBytesDs, ref memoryBytesGG);
                     }
                     Thread.Sleep(500);
                 }
@@ -215,20 +213,20 @@ namespace MemoryRandomizer.Core
         {
             if (randomizeBoth)
             {
-                rim.InitialWrite();
+                rim.Write();
             }
             else if (randomizeDSTC)
             {
-                dm.InitialWriteTotalChaos();
+                dm.WriteTotalChaos();
             }
             else if (randomizeDS)
             {
-                dm.InitialWrite();
+                dm.Write();
             }
 
             if (randomizeGG && !randomizeBoth)
             {
-                ggm.InitialWrite();
+                ggm.Write();
             }
         }
     }
