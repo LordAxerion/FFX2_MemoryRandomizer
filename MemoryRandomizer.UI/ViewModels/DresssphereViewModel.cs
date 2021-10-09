@@ -31,7 +31,7 @@ namespace MemoryRandomizer.UI
 
         public Task DeleteSave(object _)
         {
-            File.Delete(this.Parent.Path + SaveManager.DresssphereSaveFileName);
+            File.Delete(this.Parent.Path + Dresssphere.SAVE_FILE);
             return Task.CompletedTask;
         }
     }

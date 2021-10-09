@@ -152,6 +152,7 @@ namespace MemoryRandomizer.Core
         public GarmentGridMapping(ProcessMemoryReader mReader, byte[] initialByteArray) : base(mReader)
         {
             this.initialByteArray = initialByteArray;
+            this.ByteArrayHandler = new GGByteArrayHandler(this);
         }
 
         internal override void CreateMapping()

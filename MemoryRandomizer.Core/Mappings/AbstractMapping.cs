@@ -14,11 +14,10 @@ namespace MemoryRandomizer.Core
         protected readonly ProcessMemoryReader mReader;
         protected readonly Serializer mSerializer;
 
-        internal IByteArrayHandler<T> byteArrayHandler;
-
         internal abstract string SaveFile { get; }
         internal List<Tuple<T, T>> MappingList { get; set; }
         internal abstract List<T> RandomizableItems { get; set; }
+        private protected IByteArrayHandler<T> ByteArrayHandler { get; set; }
 
         protected AbstractMapping(ProcessMemoryReader mReader)
         {
@@ -36,9 +35,9 @@ namespace MemoryRandomizer.Core
         internal void Randomize(ref byte[] memoryBytesDS, ref byte[] memoryBytesGG)
         {
             // check byteArray for changes -> apply changes to mapping 
-            this.byteArrayHandler.CheckReadBytes(ref memoryBytesDS, ref memoryBytesGG);
+            this.ByteArrayHandler.CheckReadBytes(ref memoryBytesDS, ref memoryBytesGG);
             // Write mapping data to memory
-            this.byteArrayHandler.CreateByteArray(out byte[] newByteArrayDS, out byte[] newByteArrayGG);
+            this.ByteArrayHandler.CreateByteArray(out byte[] newByteArrayDS, out byte[] newByteArrayGG);
             this.WriteMemory(newByteArrayDS, newByteArrayGG);
             // Write mapping data to save file
             this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);
@@ -47,7 +46,7 @@ namespace MemoryRandomizer.Core
         internal void InitialWrite()
         {
             // Write mapping data to memory
-            this.byteArrayHandler.CreateByteArray(out byte[] newByteArrayDS, out byte[] newByteArrayGG);
+            this.ByteArrayHandler.CreateByteArray(out byte[] newByteArrayDS, out byte[] newByteArrayGG);
             this.WriteMemory(newByteArrayDS, newByteArrayGG);
             // Write mapping data to save file
             this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);

@@ -15,9 +15,6 @@ namespace MemoryRandomizer.Core
         const uint ptrOffset = 0x4fbc; // Process + 0x4fbc = Dressspheres
         const uint offset = 0;
         private static ProcessMemoryReader mReader;
-        private static BinaryReader br;
-
-        static string mode;
 
         private static bool initialReadDoneDS = false;
         private static bool initialReadDoneGG = false;
@@ -26,7 +23,6 @@ namespace MemoryRandomizer.Core
         private static byte[] newByteArrayGG = new byte[0x8];
         private static int bytesOutDS;
         private static int bytesOutGG;
-        private static int bytesIn;
 
         private static Process mGameProcess;
         private static Serializer mSerializer = new Serializer();

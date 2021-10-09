@@ -74,6 +74,7 @@ namespace MemoryRandomizer.Core
         public DresssphereMapping(ProcessMemoryReader mReader, byte[] initialByteArray) : base(mReader)
         {
             this.initialByteArray = initialByteArray;
+            this.ByteArrayHandler = new DSByteArrayHandler(this);
         }
 
         public List<RandomizableItem> RandomizableDresspheresTotalChaos { get; set; } = new List<RandomizableItem>()
@@ -102,9 +103,9 @@ namespace MemoryRandomizer.Core
         internal void RandomizeTotalChaos(ref byte[] memoryBytesDS)
         {
             // check byteArray for changes -> apply changes to mapping 
-            ((DSByteArrayHandler) this.byteArrayHandler).CheckReadBytesTotalChaos(memoryBytesDS);
+            ((DSByteArrayHandler) this.ByteArrayHandler).CheckReadBytesTotalChaos(memoryBytesDS);
             // Write mapping data to memory
-            ((DSByteArrayHandler)this.byteArrayHandler).CreateByteArrayTotalChaos(out byte[] newByteArrayDS);
+            ((DSByteArrayHandler)this.ByteArrayHandler).CreateByteArrayTotalChaos(out byte[] newByteArrayDS);
             this.WriteMemory(newByteArrayDS, null);
             // Write mapping data to save file
             this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);
@@ -113,7 +114,7 @@ namespace MemoryRandomizer.Core
         internal void InitialWriteTotalChaos()
         {
             // Write mapping data to memory
-            ((DSByteArrayHandler)this.byteArrayHandler).CreateByteArrayTotalChaos(out byte[] newByteArrayDS);
+            ((DSByteArrayHandler)this.ByteArrayHandler).CreateByteArrayTotalChaos(out byte[] newByteArrayDS);
             this.WriteMemory(newByteArrayDS, null);
             // Write mapping data to save file
             this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);

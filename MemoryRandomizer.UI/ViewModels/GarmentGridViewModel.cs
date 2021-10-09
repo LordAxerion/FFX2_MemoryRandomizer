@@ -29,7 +29,7 @@ namespace MemoryRandomizer.UI
 
         public Task DeleteSave(object _)
         {
-            File.Delete(this.Parent.Path + SaveManager.GGSaveFileName);
+            File.Delete(this.Parent.Path + GarmentGrid.SAVE_FILE);
             return Task.CompletedTask;
         }
     }

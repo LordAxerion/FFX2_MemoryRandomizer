@@ -203,6 +203,7 @@ namespace MemoryRandomizer.Core
         {
             this.initialByteArrayDS = initialByteArrayDS;
             this.initialByteArrayGG = initialByteArrayGG;
+            this.ByteArrayHandler = new RIByteArrayHandler(this); 
         }
 
         internal override void CreateMapping()
