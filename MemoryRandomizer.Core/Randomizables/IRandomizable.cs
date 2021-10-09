@@ -6,9 +6,9 @@ namespace MemoryRandomizer.Core
 {
     public interface IRandomizable
     {
-        public string SaveFile { get; }
-        public string Name { get; }
-        public uint Index { get; }
-        public bool Available { get; }
+        string SaveFile { get; }
+        string Name { get; }
+        uint Index { get; }
+        bool Available { get; }
     }
 }

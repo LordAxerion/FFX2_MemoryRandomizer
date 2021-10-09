@@ -224,7 +224,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        private static bool DoInitialShuffle<T>(AbstractMapping<T> mapping, bool readSuccessful)
+        private static bool DoInitialShuffle<T>(AbstractMapping<T> mapping, bool readSuccessful) where T : IRandomizable
         {
             if (! readSuccessful)
             {
