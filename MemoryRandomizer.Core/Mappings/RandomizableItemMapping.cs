@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class RandomizableItemMapping : IMapping<RandomizableItem>
+    public class RandomizableItemMapping : AbstractMapping<RandomizableItem>
     {
         private readonly byte[] initialByteArrayDS;
         private readonly byte[] initialByteArrayGG;

@@ -5,8 +5,11 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class Dresssphere
+    public class Dresssphere : IRandomizable
     {
+        const string SAVE_FILE = "DresssphereRando.txt";
+
+        public string SaveFile => SAVE_FILE;
         public ushort Address { get; set; }
         public string Name { get; set; }
         public uint Index { get; set; }

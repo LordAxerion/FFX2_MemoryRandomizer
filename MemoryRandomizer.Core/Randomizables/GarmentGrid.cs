@@ -6,6 +6,9 @@ namespace MemoryRandomizer.Core
 {
     public class GarmentGrid
     {
+        const string SAVE_FILE = "GGRando.txt";
+
+        public string SaveFile => SAVE_FILE;
         public string Name { get; set; }
         public uint Index { get; set; }
         public bool Available { get; set; }

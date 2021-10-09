@@ -224,7 +224,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        private static bool DoInitialShuffle<T>(IMapping<T> mapping, bool readSuccessful)
+        private static bool DoInitialShuffle<T>(AbstractMapping<T> mapping, bool readSuccessful)
         {
             if (! readSuccessful)
             {
@@ -242,7 +242,7 @@ namespace MemoryRandomizer.Core
                 return true;
             }
         }
-        private static bool DoInitiateOnly<T>(IMapping<T> mapping, bool readSuccessful, bool loadDSTC) where T : Dresssphere
+        private static bool DoInitiateOnly<T>(AbstractMapping<T> mapping, bool readSuccessful, bool loadDSTC) where T : Dresssphere
         {
             if (! readSuccessful)
             {

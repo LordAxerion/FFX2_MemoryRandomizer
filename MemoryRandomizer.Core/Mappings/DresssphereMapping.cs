@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class DresssphereMapping : IMapping<Dresssphere>
+    public class DresssphereMapping : AbstractMapping<Dresssphere>
     {
         private readonly byte[] initialByteArray;
 
@@ -96,7 +96,7 @@ namespace MemoryRandomizer.Core
             new RandomizableItem("Festivalist", 29, true, RandoItemType.Dresssphere, 0x4fd9)
         };
 
-        public void CreateMapping()
+        internal override void CreateMapping()
         {
             int i = 0;
             foreach (Dresssphere ds in Dresspheres)
@@ -113,7 +113,7 @@ namespace MemoryRandomizer.Core
                 }
             }
         }
-        public void Initiate()
+        internal override void Initiate()
         {
             int i = 0;
             foreach (byte b in this.initialByteArray)
@@ -123,7 +123,7 @@ namespace MemoryRandomizer.Core
             }
         }
         // this v can be merged with this ^ when we change all Items to RandomizableItem instead of Dressphere/GarmentGrid
-        public void InitiateTotalChaos()
+        internal override void InitiateTotalChaos()
         {
             foreach (var item in RandomizableDresspheresTotalChaos)
             {

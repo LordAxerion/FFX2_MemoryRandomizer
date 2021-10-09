@@ -12,7 +12,7 @@ namespace MemoryRandomizer.Core
 
         private static Serializer mSerializer = new Serializer();
 
-        public static bool ReadSaveFile<T>(IMapping<T> mapping, string fileName)
+        public static bool ReadSaveFile<T>(AbstractMapping<T> mapping, string fileName)
         {
             try
             {

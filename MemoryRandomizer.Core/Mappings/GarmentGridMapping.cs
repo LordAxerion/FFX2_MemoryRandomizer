@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class GarmentGridMapping : IMapping<GarmentGrid>
+    public class GarmentGridMapping : AbstractMapping<GarmentGrid>
     {
         private readonly byte[] initialByteArray;
 
