@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFX2MemoryReader;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,9 +7,11 @@ namespace MemoryRandomizer.Core
 {
     public class DresssphereMapping : AbstractMapping<Dresssphere>
     {
-        private readonly byte[] initialByteArray;
+        private const string SAVE_FILE = Dresssphere.SAVE_FILE;
 
-        public List<Tuple<Dresssphere, Dresssphere>> MappingList { get; set; } = new List<Tuple<Dresssphere, Dresssphere>>();
+        internal override string SaveFile => SAVE_FILE;
+
+        private readonly byte[] initialByteArray;
 
         public List<Dresssphere> Dresspheres = new List<Dresssphere>()
         {
@@ -44,7 +47,7 @@ namespace MemoryRandomizer.Core
             new Dresssphere(29, 0x4fd9, "Festivalist", true)
         };
 
-        public List<Dresssphere> RandomizableItems { get; set; } = new List<Dresssphere>()
+        internal override List<Dresssphere> RandomizableItems { get; set; } = new List<Dresssphere>()
         {
             new Dresssphere(1, 0x4fbd, "Gunner", true),
             new Dresssphere(2, 0x4fbe, "Gun Mage", true),
@@ -68,7 +71,7 @@ namespace MemoryRandomizer.Core
         };
 
 
-        public DresssphereMapping(byte[] initialByteArray)
+        public DresssphereMapping(ProcessMemoryReader mReader, byte[] initialByteArray) : base(mReader)
         {
             this.initialByteArray = initialByteArray;
         }
@@ -129,6 +132,16 @@ namespace MemoryRandomizer.Core
             {
                 item.Count = initialByteArray[item.Index];
             }
+        }
+
+        protected override void Save()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
+        {
+            throw new NotImplementedException();
         }
     }
 }

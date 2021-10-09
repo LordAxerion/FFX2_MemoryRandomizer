@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFX2MemoryReader;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,9 +7,11 @@ namespace MemoryRandomizer.Core
 {
     public class GarmentGridMapping : AbstractMapping<GarmentGrid>
     {
-        private readonly byte[] initialByteArray;
+        private const string SAVE_FILE = GarmentGrid.SAVE_FILE;
 
-        public List<Tuple<GarmentGrid, GarmentGrid>> MappingList { get; set; } = new List<Tuple<GarmentGrid, GarmentGrid>>();
+        internal override string SaveFile => SAVE_FILE;
+
+        private readonly byte[] initialByteArray;
 
         public List<GarmentGrid> GarmentGrids = new List<GarmentGrid>()
         {
@@ -78,7 +81,7 @@ namespace MemoryRandomizer.Core
             new GarmentGrid(63, "Last Resort")
         };
 
-        public List<GarmentGrid> RandomizableItems { get; set; } = new List<GarmentGrid>()
+        internal override List<GarmentGrid> RandomizableItems { get; set; } = new List<GarmentGrid>()
         {
             new GarmentGrid(0,"First Steps"),
             new GarmentGrid(1, "Vanguard"),
@@ -146,12 +149,12 @@ namespace MemoryRandomizer.Core
             new GarmentGrid(63, "Last Resort")
         };
 
-        public GarmentGridMapping(byte[] initialByteArray)
+        public GarmentGridMapping(ProcessMemoryReader mReader, byte[] initialByteArray) : base(mReader)
         {
             this.initialByteArray = initialByteArray;
         }
 
-        public void CreateMapping()
+        internal override void CreateMapping()
         {
             int i = 0;
             foreach (GarmentGrid gg in GarmentGrids)
@@ -162,7 +165,7 @@ namespace MemoryRandomizer.Core
                 i++;
             }
         }
-        public void Initiate()
+        internal override void Initiate()
         {
             for (int i = 0; i < GarmentGrids.Count; i++)
             {
@@ -173,7 +176,17 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        public void InitiateTotalChaos()
+        internal override void InitiateTotalChaos()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void Save()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
         {
             throw new NotImplementedException();
         }

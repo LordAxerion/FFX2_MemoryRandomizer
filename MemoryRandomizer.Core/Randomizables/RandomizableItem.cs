@@ -7,9 +7,8 @@ namespace MemoryRandomizer.Core
 {
     public class RandomizableItem : IRandomizable
     {
-        const string SAVE_FILE = "FullRando.txt";
+        public const string SAVE_FILE = "FullRando.txt";
 
-        public string SaveFile => SAVE_FILE;
         public string Name { get; set; }
         public int Index { get; set; }
         public int ByteIndex { get; set; }

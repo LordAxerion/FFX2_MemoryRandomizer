@@ -15,13 +15,15 @@ namespace MemoryRandomizer.Core
 
         internal IByteArrayHandler<T> byteArrayHandler;
 
-        internal abstract List<Tuple<T, T>> MappingList { get; set; }
+        internal abstract string SaveFile { get; }
+        internal List<Tuple<T, T>> MappingList { get; set; }
         internal abstract List<T> RandomizableItems { get; set; }
 
         protected AbstractMapping(ProcessMemoryReader mReader)
         {
             this.mReader = mReader;
             this.mSerializer = new Serializer();
+            this.MappingList = new List<Tuple<T, T>>();
         }
 
         internal abstract void Initiate();

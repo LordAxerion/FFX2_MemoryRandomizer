@@ -46,18 +46,18 @@ namespace MemoryRandomizer.Core
             // Read save files
             if (randomizeBoth && loadBoth)
             {
-                rim = new RandomizableItemMapping(newByteArrayDS, newByteArrayGG);
-                initialReadDoneBoth = SaveManager.ReadSaveFile(rim, SaveManager.GGSaveFileName);
+                rim = new RandomizableItemMapping(mReader, newByteArrayDS, newByteArrayGG);
+                initialReadDoneBoth = SaveManager.ReadSaveFile(rim);
             }
             if (randomizeDS && loadDS)
             {
-                dm = new DresssphereMapping(newByteArrayDS);
-                initialReadDoneDS = SaveManager.ReadSaveFile(dm, SaveManager.DresssphereSaveFileName);
+                dm = new DresssphereMapping(mReader, newByteArrayDS);
+                initialReadDoneDS = SaveManager.ReadSaveFile(dm);
             }
             if (randomizeGG && loadGG)
             {
-                ggm = new GarmentGridMapping(newByteArrayGG);
-                initialReadDoneGG = SaveManager.ReadSaveFile(ggm, SaveManager.GGSaveFileName);
+                ggm = new GarmentGridMapping(mReader, newByteArrayGG);
+                initialReadDoneGG = SaveManager.ReadSaveFile(ggm);
             }
 
             // Attach to process
@@ -108,7 +108,7 @@ namespace MemoryRandomizer.Core
                         int error2 = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
                         this.CheckError(error, error2);
 
-                        mSerializer.SaveMapping(SaveManager.BothSaveFileName, rim.MappingList);
+                        mSerializer.SaveMapping(rim.SaveFile, rim.MappingList);
                     }                    
                     else if (randomizeDSTotalChaos)
                     {
@@ -127,7 +127,7 @@ namespace MemoryRandomizer.Core
                         int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
                         this.CheckError(error);
 
-                        mSerializer.SaveMapping(SaveManager.DresssphereSaveFileName, dm.MappingList);
+                        mSerializer.SaveMapping(dm.SaveFile, dm.MappingList);
                     }
 
                     if (randomizeGG && !randomizeBoth)
@@ -139,7 +139,7 @@ namespace MemoryRandomizer.Core
                         int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
                         this.CheckError(error);
 
-                        mSerializer.SaveMapping(SaveManager.GGSaveFileName, ggm.MappingList);
+                        mSerializer.SaveMapping(ggm.SaveFile, ggm.MappingList);
                     }
                     Thread.Sleep(500);
                 }
@@ -197,7 +197,7 @@ namespace MemoryRandomizer.Core
                 byte[] initialMemoryBytesDS = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOutDS);
                 byte[] initialMemoryBytesGG = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), 0x8, out bytesOutGG);
 
-                rim = new RandomizableItemMapping(initialMemoryBytesDS, initialMemoryBytesGG);
+                rim = new RandomizableItemMapping(mReader, initialMemoryBytesDS, initialMemoryBytesGG);
                 initialReadDoneBoth = DoInitialShuffle(rim, bytesOutDS > 0 || bytesOutGG > 0);
 
             }
@@ -205,7 +205,7 @@ namespace MemoryRandomizer.Core
             {
                 byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), 0x1E, out bytesOutDS);
 
-                dm = new DresssphereMapping(initialMemoryBytes);
+                dm = new DresssphereMapping(mReader, initialMemoryBytes);
                 if (totalChaos)
                 {
                     initialReadDoneDS = DoInitiateOnly(dm, bytesOutDS > 0, totalChaos);
@@ -219,7 +219,7 @@ namespace MemoryRandomizer.Core
             {
                 byte[] initialMemoryBytes = mReader.ReadMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), 0x8, out bytesOutGG);
 
-                ggm = new GarmentGridMapping(initialMemoryBytes);
+                ggm = new GarmentGridMapping(mReader, initialMemoryBytes);
                 initialReadDoneGG = DoInitialShuffle(ggm, bytesOutGG > 0);
             }
         }
@@ -265,7 +265,7 @@ namespace MemoryRandomizer.Core
                 int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
                 int error2 = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
                 CheckError(error, error2);
-                mSerializer.SaveMapping(SaveManager.BothSaveFileName, rim.MappingList);
+                mSerializer.SaveMapping(rim.SaveFile, rim.MappingList);
             }
             else if (randomizeDSTC)
             {
@@ -279,7 +279,7 @@ namespace MemoryRandomizer.Core
                 byteArrayHandler.CreateByteArrayDS(ref newByteArrayDS);
                 int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
                 CheckError(error);
-                mSerializer.SaveMapping(SaveManager.DresssphereSaveFileName, dm.MappingList);
+                mSerializer.SaveMapping(dm.SaveFile, dm.MappingList);
             }
 
             if (randomizeGG && !randomizeBoth)
@@ -288,7 +288,7 @@ namespace MemoryRandomizer.Core
                 byteArrayHandler.CreateByteArrayGG(ref newByteArrayGG);
                 int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
                 CheckError(error);
-                mSerializer.SaveMapping(SaveManager.GGSaveFileName, ggm.MappingList);
+                mSerializer.SaveMapping(ggm.SaveFile, ggm.MappingList);
             }
         }
     }

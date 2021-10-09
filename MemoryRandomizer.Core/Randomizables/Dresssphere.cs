@@ -7,19 +7,18 @@ namespace MemoryRandomizer.Core
 {
     public class Dresssphere : IRandomizable
     {
-        const string SAVE_FILE = "DresssphereRando.txt";
+        public const string SAVE_FILE = "DresssphereRando.txt";
 
-        public string SaveFile => SAVE_FILE;
         public ushort Address { get; set; }
         public string Name { get; set; }
-        public uint Index { get; set; }
+        public int Index { get; set; }
         // Some Dressspheres are in memory, but they will always stay on 0
         // We want to know them but not randomize them
         public bool Available { get; set; }
         public uint Count { get; set; }
 
         [JsonConstructor]
-        public Dresssphere(uint index, ushort address, string name, bool available, uint count = 0)
+        public Dresssphere(int index, ushort address, string name, bool available, uint count = 0)
         {
             Index = index;
             Address = address;

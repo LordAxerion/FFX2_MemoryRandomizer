@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFX2MemoryReader;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,10 +7,11 @@ namespace MemoryRandomizer.Core
 {
     public class RandomizableItemMapping : AbstractMapping<RandomizableItem>
     {
+        private const string SAVE_FILE = RandomizableItem.SAVE_FILE;
         private readonly byte[] initialByteArrayDS;
         private readonly byte[] initialByteArrayGG;
 
-        public List<Tuple<RandomizableItem, RandomizableItem>> MappingList { get; set; } = new List<Tuple<RandomizableItem, RandomizableItem>>();
+        internal override string SaveFile => SAVE_FILE;
 
         public static List<RandomizableItem> Items = new List<RandomizableItem>()
         {
@@ -109,7 +111,7 @@ namespace MemoryRandomizer.Core
             new RandomizableItem("Psychic", 28, true, true), //92
             new RandomizableItem("Festivalist", 29, true, true) //93*/
         };
-        public List<RandomizableItem> RandomizableItems { get; set; } = new List<RandomizableItem>()
+        internal override List<RandomizableItem> RandomizableItems { get; set; } = new List<RandomizableItem>()
         {
             /*new RandomizableItem("First Steps", 0, false, true),
             new RandomizableItem("Vanguard", 1, false, true),
@@ -197,13 +199,13 @@ namespace MemoryRandomizer.Core
             new RandomizableItem("Festivalist", 29, true, true) //82*/
         };
 
-        public RandomizableItemMapping(byte[] initialByteArrayDS, byte[] initialByteArrayGG)
+        public RandomizableItemMapping(ProcessMemoryReader mReader, byte[] initialByteArrayDS, byte[] initialByteArrayGG) : base(mReader)
         {
             this.initialByteArrayDS = initialByteArrayDS;
             this.initialByteArrayGG = initialByteArrayGG;
         }
 
-        public void CreateMapping()
+        internal override void CreateMapping()
         {
             int i = 0;
             foreach (RandomizableItem item in Items)
@@ -222,7 +224,7 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        public void Initiate()
+        internal override void Initiate()
         {
             foreach (RandomizableItem item in Items)
             {
@@ -246,7 +248,17 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        public void InitiateTotalChaos()
+        internal override void InitiateTotalChaos()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void Save()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
         {
             throw new NotImplementedException();
         }
