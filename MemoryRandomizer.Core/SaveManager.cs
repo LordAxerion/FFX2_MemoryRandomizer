@@ -6,13 +6,9 @@ namespace MemoryRandomizer.Core
 {
     public static class SaveManager
     {
-        public const string DresssphereSaveFileName = "DresssphereRando.txt";
-        public const string BothSaveFileName = "FullRando.txt";
-        public const string GGSaveFileName = "GGRando.txt";
-
         private static Serializer mSerializer = new Serializer();
 
-        public static bool ReadSaveFile<T>(AbstractMapping<T> mapping, string fileName)
+        public static bool ReadSaveFile<T>(AbstractMapping<T> mapping, string fileName) where T : IRandomizable
         {
             try
             {

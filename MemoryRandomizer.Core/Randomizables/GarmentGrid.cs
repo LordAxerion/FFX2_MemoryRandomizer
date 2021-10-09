@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public class GarmentGrid
+    public class GarmentGrid : IRandomizable
     {
         const string SAVE_FILE = "GGRando.txt";
 

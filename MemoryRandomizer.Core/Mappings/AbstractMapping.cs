@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MemoryRandomizer.Core
 {
-    public abstract class AbstractMapping<T>
+    public abstract class AbstractMapping<T> where T : IRandomizable
     {
         public List<Tuple<T, T>> MappingList { get; set; }
         public List<T> RandomizableItems { get; set; }
