@@ -98,66 +98,25 @@ namespace MemoryRandomizer.Core
                 {
                     if (randomizeBoth)
                     {
-                        // check byteArray for changes -> apply changes to mapping 
-                        byteArrayHandler.CheckReadBytesBoth(ref memoryBytesDs, ref memoryBytesGG);
-                        // Write mapping data to memory
-                        newByteArrayGG = new byte[0x8];
-                        byteArrayHandler.CreateByteArrayBoth(ref newByteArrayDS, ref newByteArrayGG);
-
-                        int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
-                        int error2 = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
-                        this.CheckError(error, error2);
-
-                        mSerializer.SaveMapping(rim.SaveFile, rim.MappingList);
+                        rim.Randomize(ref memoryBytesDs, ref memoryBytesGG);
                     }                    
                     else if (randomizeDSTotalChaos)
                     {
-                        byteArrayHandler.CheckReadBytesDSTotalChaos(memoryBytesDs);
-                        byteArrayHandler.CreateByteArrayDSTC(ref newByteArrayDS);
-                        int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
-                        this.CheckError(error);
+                        dm.RandomizeTotalChaos(ref memoryBytesDs);
                     }
                     else if (randomizeDS)
                     {
-                        // check byteArray for changes -> apply changes to mapping 
-                        byteArrayHandler.CheckReadBytesDS(ref memoryBytesDs);
-                        // Write mapping data to memory
-                        byteArrayHandler.CreateByteArrayDS(ref newByteArrayDS);
-
-                        int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
-                        this.CheckError(error);
-
-                        mSerializer.SaveMapping(dm.SaveFile, dm.MappingList);
+                        dm.Randomize(ref memoryBytesDs, ref memoryBytesGG);
                     }
 
                     if (randomizeGG && !randomizeBoth)
                     {
-                        byteArrayHandler.CheckReadBytesGG(ref memoryBytesGG);
-                        newByteArrayGG = new byte[0x8];
-                        byteArrayHandler.CreateByteArrayGG(ref newByteArrayGG);
-
-                        int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
-                        this.CheckError(error);
-
-                        mSerializer.SaveMapping(ggm.SaveFile, ggm.MappingList);
+                        ggm.Randomize(ref memoryBytesDs, ref memoryBytesGG);
                     }
                     Thread.Sleep(500);
                 }
             }
         }
-
-        #region Helper
-        private void CheckError(params int[] errors)
-        {
-            foreach (int error in errors)
-            {
-                if (error != 0)
-                {
-                    throw new IOException($"Write Memory returned with error code {error}");
-                }
-            }
-        }
-        #endregion Helper
 
         #region process
         private static Process FindGameProcess()
@@ -260,35 +219,20 @@ namespace MemoryRandomizer.Core
         {
             if (randomizeBoth)
             {
-                byteArrayHandler.CreateByteArrayBoth(ref newByteArrayDS, ref newByteArrayGG);
-
-                int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
-                int error2 = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
-                CheckError(error, error2);
-                mSerializer.SaveMapping(rim.SaveFile, rim.MappingList);
+                rim.InitialWrite();
             }
             else if (randomizeDSTC)
             {
-                byteArrayHandler.CreateByteArrayDSTC(ref newByteArrayDS);
-                int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
-                CheckError(error);
+                dm.InitialWriteTotalChaos();
             }
             else if (randomizeDS)
             {
-                // Write mapping data to memory
-                byteArrayHandler.CreateByteArrayDS(ref newByteArrayDS);
-                int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startofDresssphereSaves), newByteArrayDS, out bytesIn);
-                CheckError(error);
-                mSerializer.SaveMapping(dm.SaveFile, dm.MappingList);
+                dm.InitialWrite();
             }
 
             if (randomizeGG && !randomizeBoth)
             {
-                newByteArrayGG = new byte[0x8];
-                byteArrayHandler.CreateByteArrayGG(ref newByteArrayGG);
-                int error = mReader.WriteMemory((IntPtr)((uint)mGameProcess.Modules[0].BaseAddress + startOfGGSaves), newByteArrayGG, out bytesIn);
-                CheckError(error);
-                mSerializer.SaveMapping(ggm.SaveFile, ggm.MappingList);
+                ggm.InitialWrite();
             }
         }
     }

@@ -99,6 +99,26 @@ namespace MemoryRandomizer.Core
             new RandomizableItem("Festivalist", 29, true, RandoItemType.Dresssphere, 0x4fd9)
         };
 
+        internal void RandomizeTotalChaos(ref byte[] memoryBytesDS)
+        {
+            // check byteArray for changes -> apply changes to mapping 
+            ((DSByteArrayHandler) this.byteArrayHandler).CheckReadBytesTotalChaos(memoryBytesDS);
+            // Write mapping data to memory
+            ((DSByteArrayHandler)this.byteArrayHandler).CreateByteArrayTotalChaos(out byte[] newByteArrayDS);
+            this.WriteMemory(newByteArrayDS, null);
+            // Write mapping data to save file
+            this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);
+        }
+
+        internal void InitialWriteTotalChaos()
+        {
+            // Write mapping data to memory
+            ((DSByteArrayHandler)this.byteArrayHandler).CreateByteArrayTotalChaos(out byte[] newByteArrayDS);
+            this.WriteMemory(newByteArrayDS, null);
+            // Write mapping data to save file
+            this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);
+        }
+
         internal override void CreateMapping()
         {
             int i = 0;
@@ -134,14 +154,11 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        protected override void Save()
+        protected override int WriteMemory(byte[] memoryBytesDS, byte[] _)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
-        {
-            throw new NotImplementedException();
+            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + startofDresssphereSaves), memoryBytesDS, out int bytesIn);
+            this.CheckError(error);
+            return bytesIn;
         }
     }
 }

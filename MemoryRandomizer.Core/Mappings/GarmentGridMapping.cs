@@ -181,14 +181,11 @@ namespace MemoryRandomizer.Core
             throw new NotImplementedException();
         }
 
-        protected override void Save()
+        protected override int WriteMemory(byte[] _, byte[] memoryBytesGG)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
-        {
-            throw new NotImplementedException();
+            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + startOfGGSaves), memoryBytesGG, out int bytesIn);
+            this.CheckError(error);
+            return bytesIn;
         }
     }
 }

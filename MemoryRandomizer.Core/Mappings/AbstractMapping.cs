@@ -1,6 +1,7 @@
 ﻿using FFX2MemoryReader;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace MemoryRandomizer.Core
@@ -30,8 +31,7 @@ namespace MemoryRandomizer.Core
         internal abstract void CreateMapping();
         internal abstract void InitiateTotalChaos();
 
-        protected abstract void Save();
-        protected abstract void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG);
+        protected abstract int WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG);
 
         internal void Randomize(ref byte[] memoryBytesDS, ref byte[] memoryBytesGG)
         {
@@ -41,16 +41,27 @@ namespace MemoryRandomizer.Core
             this.byteArrayHandler.CreateByteArray(out byte[] newByteArrayDS, out byte[] newByteArrayGG);
             this.WriteMemory(newByteArrayDS, newByteArrayGG);
             // Write mapping data to save file
-            this.Save();
+            this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);
         }
 
-        internal void InitialShuffle()
+        internal void InitialWrite()
         {
             // Write mapping data to memory
             this.byteArrayHandler.CreateByteArray(out byte[] newByteArrayDS, out byte[] newByteArrayGG);
             this.WriteMemory(newByteArrayDS, newByteArrayGG);
             // Write mapping data to save file
-            this.Save();
+            this.mSerializer.SaveMapping(this.SaveFile, this.MappingList);
+        }
+
+        protected void CheckError(params int[] errors)
+        {
+            foreach (int error in errors)
+            {
+                if (error != 0)
+                {
+                    throw new IOException($"Write Memory returned with error code {error}");
+                }
+            }
         }
     }
 }

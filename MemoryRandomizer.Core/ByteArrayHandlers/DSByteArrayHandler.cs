@@ -26,8 +26,10 @@ namespace MemoryRandomizer.Core
             }
         }
 
-        public void CreateByteArrayTotalChaos(ref byte[] newByteArray)
+        public void CreateByteArrayTotalChaos(out byte[] newByteArray)
         {
+            newByteArray = new byte[0x1E];
+
             foreach (var item in dresssphereMapping.RandomizableDresspheresTotalChaos)
             {
                 newByteArray[item.Index] = Convert.ToByte(item.Count);

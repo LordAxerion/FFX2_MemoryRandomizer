@@ -253,14 +253,12 @@ namespace MemoryRandomizer.Core
             throw new NotImplementedException();
         }
 
-        protected override void Save()
+        protected override int WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
         {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteMemory(byte[] memoryBytesDS, byte[] memoryBytesGG)
-        {
-            throw new NotImplementedException();
+            int error = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + startofDresssphereSaves), memoryBytesDS, out int bytesIn);
+            int error2 = mReader.WriteMemory((IntPtr)((uint)mReader.ReadProcess.Modules[0].BaseAddress + startOfGGSaves), memoryBytesGG, out int bytesIn2);
+            this.CheckError(error, error2);
+            return bytesIn + bytesIn2;
         }
     }
 }
