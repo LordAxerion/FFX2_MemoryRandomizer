@@ -195,7 +195,7 @@ namespace MemoryRandomizer.Core
                 return true;
             }
         }
-        private static bool DoInitiateOnly<T>(AbstractMapping<T> mapping, bool readSuccessful, bool loadDSTC) where T : Dresssphere
+        private static bool DoInitiateOnly(DresssphereMapping mapping, bool readSuccessful, bool loadDSTC)
         {
             if (! readSuccessful)
             {
